@@ -1,6 +1,6 @@
 # Ecommerce Platform Backend
 
-This project is the backend for an ecommerce platform, independently developed to ensure robust functionality and scalability.  
+This project is the Full stack for an ecommerce platform, independently developed to ensure robust functionality and scalability.  
 It is built with Next.js API routes, Prisma ORM, and MySQL, providing efficient and secure data handling for all core ecommerce operations.
 
 ## Features
@@ -25,6 +25,8 @@ It is built with Next.js API routes, Prisma ORM, and MySQL, providing efficient 
 
 ## Tech Stack
 
+Frontend: JSX,Tailwind CSS,Next.js
+
 - Backend Framework: Next.js API Routes
 - Database: MySQL
 - ORM: Prisma
@@ -32,3 +34,31 @@ It is built with Next.js API routes, Prisma ORM, and MySQL, providing efficient 
 
 ## Project Structure
 
+ecommerce-platform/
+│
+├── prisma/
+│ ├── schema.prisma
+│ └── migrations/
+│
+├── src/
+│ ├── app/api/
+│ │ ├── auth/
+│ │ ├── user/
+│ │ ├── product/
+│ │ ├── cart/
+│ │ ├── invoice/
+│ │ ├── payment/
+│ │ └── features/
+│ │
+│ ├── lib/
+│ ├── services/
+│ ├── repositories/
+│ ├── middleware/
+│ ├── utils/
+│ ├── constants/
+│ └── config/
+│
+├── .env
+├── package.json
+├── README.md
+└── next.config.js
