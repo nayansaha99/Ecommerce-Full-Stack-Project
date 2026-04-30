@@ -1,11 +1,15 @@
+ import Appnavbar from '@/components/master/Appnavbar';
+import Footer from '@/components/master/footer';
+import Plainlayout from '@/components/master/Plainlayout';
 import React from 'react';
-
-const Page = () => {
+ 
+ const page = () => {
     return (
-        <div>
-            
-        </div>
+       <Plainlayout>
+        <Appnavbar/>
+        <Footer/>
+       </Plainlayout>
     );
-};
-
-export default Page;
+ };
+ 
+ export default page;

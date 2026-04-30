@@ -1,5 +1,5 @@
-
 import NextTopLoader from 'nextjs-toploader';
+import './globals.css'
 
 
 export default function RootLayout({ children }) {

@@ -1,17 +1,17 @@
 import nodemailer from 'nodemailer';
-export async function SendEmail(EmailTo,EmailText,EmailSubject){
-   let Transport= nodemailer.createTransport({
-        host:"mail.teamrabbil.com",
-        port:25,
-        secure:false,
-        auth:{user:"info@teamrabbil.com", pass:"~sR4[bhaC[Qs"},
-        tls:{rejectUnauthorized:false}
-    })
-    let MailOption={
-       from:"Next Ecommerce <info@teamrabbil.com>",
-       to:EmailTo,
-       subject:EmailSubject,
-       text:EmailText
-    }
-    return await Transport.sendMail(MailOption)
+export async function SendEmail(EmailTo, EmailText, EmailSubject) {
+   let Transport = nodemailer.createTransport({
+      host:"smtp.gmail.com",
+      port: 587,
+      secure: false,
+      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+      tls: { rejectUnauthorized: false }
+   })
+   let MailOption = {
+      from: `Next Ecommerce <${process.env.EMAIL_USER}>`,
+      to: EmailTo,
+      subject: EmailSubject,
+      text: EmailText
+   }
+   return await Transport.sendMail(MailOption)
 }

@@ -1,31 +1,30 @@
-import {NextResponse} from "next/server";
-import {PrismaClient} from "@prisma/client"
-import {CreateToken} from "@/utility/JWTTokenHelper";
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client"
+import { CreateToken } from "@/utility/JWTTokenHelper";
+import { headers } from "next/headers";
+export async function POST(req, res) {
 
-export async function POST(req,res) {
-    try{
-        let reqBody=await req.json();
-        const prisma=new PrismaClient();
-        const result=await prisma.users.findMany({where:reqBody})
-
-        if(result.length===0){
-            return  NextResponse.json({status:"fail",data:"Invalid Verification Code"})
+    try {
+        let headerList = headers();
+        let email = headerList.get('email');
+        const prisma = new PrismaClient();
+        let reqBody = await req.json();
+        const otp = reqBody.otp;
+        if (!otp) {
+            return NextResponse.json({ status: "fail", data: "OTP is missing" });
         }
-        else{
+        const user = await prisma.users.findUnique({ where: { email: email, otp: otp } })
+        await prisma.users.update({
+            where: { email: email },
+            data: { otp: "0" }
+        });
+        let token = await CreateToken(user.email, user.id);
+        let expireDuration = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        const cookieString = `token=${token}; expires=${expireDuration.toUTCString()} ;path=/; httpOnly:true; SameSite=Strict`;
+        return NextResponse.json({ status: "success", data: token }, { status: 200, headers: { 'set-cookie': cookieString } })
 
-           await prisma.users.update({
-                where: { email: reqBody['email'] },
-                data:{otp:"0"}
-            });
-
-
-            let token=await CreateToken(result[0]['email'],result[0]['id']);
-            let expireDuration=new Date(Date.now() + 24*60*60*1000 );
-            const cookieString=`token=${token}; expires=${expireDuration.toUTCString()} ;path=/`;
-            return  NextResponse.json({status:"success",data:token},{status:200,headers:{'set-cookie':cookieString}})
-        }
     }
     catch (e) {
-        return  NextResponse.json({status:"fail",data:e})
+        return NextResponse.json({ status: "fail", data: e })
     }
 }

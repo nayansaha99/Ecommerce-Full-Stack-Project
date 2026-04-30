@@ -10,7 +10,7 @@ export async function middleware(req,res){
         return NextResponse.next({request:{headers:requestHeader}})
     }catch (e) {
         if (req.url.startsWith('/api/')) {
-            return NextResponse.json({status: 'fail', data: 'Unauthorized',}, {status: 401});
+            return NextResponse.json({status: 'fail', data:'Unauthorized',}, {status: 401});
         } else {
             return res.redirect('/login');
         }
@@ -18,5 +18,5 @@ export async function middleware(req,res){
 }
 
 export const config = {
-    matcher: ['/api/cart/:path*', '/api/invoice/:path*','/api/user/profile','/api/wish/:path*'],
+    matcher: ['/api/cart/:path*', '/api/invoice/:path*','/api/user/profile','/api/wish/:path*','/api/user/review','/api/user/verify-otp']
 }

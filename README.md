@@ -1,38 +1,34 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Ecommerce Platform Backend
 
-## Getting Started
+This project is the backend for an ecommerce platform, independently developed to ensure robust functionality and scalability.  
+It is built with Next.js API routes, Prisma ORM, and MySQL, providing efficient and secure data handling for all core ecommerce operations.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- API routes built with Next.js to handle:
+  - Customer login and registration
+  - JWT token-based authentication
+  - User OTP functionality
+  - Cart management
+  - Invoices
+  - Invoice of products
+  - Invoice delivery status
+  - Product reviews
+  - Payment processing
+  - User wishlists
+  - Product sliders
+  - Product details
+  - Features list
+- Prisma ORM for database interaction
+- MySQL for reliable and scalable data storage
+- Secure data handling with efficient queries
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- Backend Framework: Next.js API Routes
+- Database: MySQL
+- ORM: Prisma
+- Authentication: JWT tokens with custom login, registration and OTP function
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Project Structure
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-# News-Project
-# Next.js-Prisma-Full-Stack-News-Site-Project

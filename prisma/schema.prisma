@@ -7,9 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
-
 model brands {
   id        Int        @id @default(autoincrement())
   brandName String     @unique @db.VarChar(50)
@@ -39,10 +36,10 @@ model products {
   stock          Boolean
   star           Float
   remark         products_remark
-  category_id Int
-  brand_id    Int
-  createdAt DateTime @default(now()) @db.Timestamp(0)
-  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
+  category_id    Int
+  brand_id       Int
+  createdAt      DateTime        @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime        @default(now()) @updatedAt @db.Timestamp(0)
 
   invoice_products invoice_products[]
   product_carts    product_carts[]
@@ -89,9 +86,11 @@ model product_sliders {
 model users {
   id        Int      @id @default(autoincrement())
   email     String   @unique
+  password  String   @db.VarChar(100)
   otp       String   @db.VarChar(10)
   createdAt DateTime @default(now()) @db.Timestamp(0)
   updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
+  role      String   @default("user")
 
   customer_profiles customer_profiles?
   invoice_products  invoice_products[]
@@ -126,8 +125,6 @@ model customer_profiles {
   product_reviews product_reviews[]
 }
 
-
-
 model product_carts {
   id         Int      @id @default(autoincrement())
   user_id    Int
@@ -140,10 +137,6 @@ model product_carts {
   products   products @relation(fields: [product_id], references: [id], onDelete: Restrict, onUpdate: Cascade)
   users      users    @relation(fields: [user_id], references: [id], onDelete: Restrict, onUpdate: Cascade)
 }
-
-
-
-
 
 model product_wishes {
   id         Int      @id @default(autoincrement())
