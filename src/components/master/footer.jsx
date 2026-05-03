@@ -1,8 +1,7 @@
 import React from 'react';
-
 const Footer = () => {
     return (
-    <div className="w-full mt-5">
+    <div className="w-full mt-2">
         {/* Footer Container */}
         <div className="bg-slate-900 text-slate-400 py-12 px-6">
             <div className="max-w-7xl mx-auto">

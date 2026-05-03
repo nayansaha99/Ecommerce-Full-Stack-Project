@@ -1,54 +1,59 @@
 'use client'
 import React from 'react';
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     ShoppingCart, Heart, Search, Menu, X, ChevronLeft, ChevronRight,
     Star, Truck, Shield, RefreshCw, Headphones, Eye, EyeOff,
     CreditCard, Smartphone, Wallet, CheckCircle, User, LogIn,
     MapPin, Bell, Package, ArrowRight, Zap, Tag
 } from "lucide-react";
+import Login from '../user/Login';
+import SignUp from '../user/SignUp';
+import WishList from '../products/WishList';
+import CartList from '../products/CartList';
+import MobileNav from '../products/MobileNav';
 
+const SPRING = { type: "spring", stiffness: 300, damping: 30 };
 
+const slideLeftVar = {
+    hidden: { x: "-100%", opacity: 0.8 },
+    visible: { x: 0, opacity: 1, transition: { ...SPRING } },
+    exit: { x: "-100%", opacity: 0.8, transition: { duration: 0.22 } },
+};
+const backdropVar = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.25 } },
+    exit: { opacity: 0, transition: { duration: 0.2 } },
+};
+
+// const CATEGORIES_LIST = [
+//     { name: "Dresses", icon: "👗", count: "2.4k+" },
+//     { name: "Ornaments", icon: "💍", count: "1.2k+" },
+//     { name: "Electronics", icon: "📱", count: "1.8k+" },
+//     { name: "Home & Living", icon: "🏠", count: "3.1k+" },
+//     { name: "Beauty", icon: "💄", count: "780+" },
+//     { name: "Sports", icon: "⚽", count: "620+" },
+//     { name: "Books", icon: "📚", count: "950+" },
+//     { name: "Food", icon: "🛒", count: "4.2k+" },
+// ];
 const Appnavbar = () => {
-    const [cartItems, setCartItems] = useState([]);
-    const [wishlist, setWishlist] = useState([]);
     const [showLogin, setShowLogin] = useState(false);
+    const [wishlistOpen, setWishlistOpen] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
     const [showPayment, setShowPayment] = useState(false);
     const [showCart, setShowCart] = useState(false);
-    const [mobileMenu, setMobileMenu] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState("bkash");
     const [paymentDone, setPaymentDone] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [activeCategory, setActiveCategory] = useState("All");
-    const [loginForm, setLoginForm] = useState({ email: "", password: "" });
-    const [regForm, setRegForm] = useState({ name: "", email: "", password: "", confirm: "" });
     const [notification, setNotification] = useState(null);
+    const [isOpen, setIsOpen] = useState(false);
 
     const showNotif = (msg, type = "success") => {
         setNotification({ msg, type });
         setTimeout(() => setNotification(null), 2500);
     };
-
-    const addToCart = (product) => {
-        setCartItems(prev => {
-            const exists = prev.find(i => i.id === product.id);
-            if (exists) return prev.map(i => i.id === product.id ? { ...i, qty: i.qty + 1 } : i);
-            return [...prev, { ...product, qty: 1 }];
-        });
-        showNotif(`"${product.name.slice(0, 28)}..." added to cart`);
-    };
-
-    const toggleWishlist = (id) => {
-        setWishlist(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
-    };
-
-    const cartTotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
-    const cartCount = cartItems.reduce((s, i) => s + i.qty, 0);
-
-
-
     const handlePay = () => {
         setPaymentDone(true);
         setTimeout(() => {
@@ -117,30 +122,34 @@ const Appnavbar = () => {
 
                         </div>
                         {/* Nav Actions */}
+                        {/* {signinbutton} */}
                         <div className="flex items-center gap-1">
-                            <button onClick={() => setShowLogin(true)} className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors text-slate-700">
-                                <User className="w-5 h-5" />
-                                <span className="text-sm font-medium">Account</span>
-                            </button>
+                            <Login
+                                setShowRegister={setShowRegister}
+                                setShowLogin={setShowLogin}
+                                showLogin={showLogin}
+                                showNotif={showNotif}
+                            />
+                            <WishList
+                                setWishlistOpen={setWishlistOpen}
+                                wishlistOpen={wishlistOpen}
+                                showNotif={showNotif}
 
-                            <button onClick={() => { }} className="relative p-2.5 rounded-lg hover:bg-slate-100 transition-colors text-slate-700">
-                                <Heart className="w-5 h-5" />
-                                {wishlist.length > 0 && (
-                                    <span className="absolute -top-0.5 -right-0.5 bg-rose-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">{wishlist.length}</span>
-                                )}
-                            </button>
+                            />
 
-                            <button onClick={() => setShowCart(true)} className="relative flex items-center gap-2 px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white ml-1">
-                                <ShoppingCart className="w-5 h-5" />
-                                <span className="text-sm font-medium hidden sm:block">Cart</span>
-                                {cartCount > 0 && (
-                                    <span className="bg-amber-400 text-slate-900 text-xs rounded-full w-5 h-5 flex items-center justify-center font-black">{cartCount}</span>
-                                )}
-                            </button>
+                            <CartList
+                                showCart={showCart}
+                                setShowCart={setShowCart}
+                                showNotif={showNotif}
+                            />
+                            <MobileNav
+                                isOpen={isOpen}
+                                setIsOpen={setIsOpen}
+                                activeCategory={activeCategory}
+                                setShowRegister={setShowRegister}
+                                setShowLogin={setShowLogin}
+                                showLogin={showLogin} />
 
-                            <button onClick={() => setMobileMenu(!mobileMenu)} className="md:hidden p-2.5 rounded-lg hover:bg-slate-100 transition-colors text-slate-700 ml-1">
-                                {mobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-                            </button>
                         </div>
                     </div>
 
@@ -148,7 +157,7 @@ const Appnavbar = () => {
                     <div className="border-t border-slate-100 bg-white hidden md:block">
                         <div className="max-w-7xl mx-auto px-4">
                             <div className="flex items-center gap-0 overflow-x-auto scrollbar-hide">
-                                {["All", "Fashion", "Electronics", "Home & Living", "Beauty", "Sports", "Books", "Food & Grocery"].map(cat => (
+                                {["All", "Dresses", "Ornaments", "Electronics", "Home & Living", "Beauty", "Sports", "Food"].map(cat => (
                                     <button
                                         key={cat}
                                         onClick={() => setActiveCategory(cat)}
@@ -163,174 +172,16 @@ const Appnavbar = () => {
                             </div>
                         </div>
                     </div>
-
                     {/* Mobile Menu */}
-                    {mobileMenu && (
-                        <div className="md:hidden bg-white border-t border-slate-200 px-4 py-4 space-y-3">
-                            <button onClick={() => { setShowLogin(true); setMobileMenu(false); }} className="flex items-center gap-3 w-full text-slate-700 font-medium py-2">
-                                <LogIn className="w-5 h-5 text-indigo-600" /> Sign In / Register
-                            </button>
-                            {["Fashion", "Electronics", "Home & Living", "Beauty"].map(c => (
-                                <button key={c} onClick={() => { setActiveCategory(c); setMobileMenu(false); }} className="flex items-center gap-3 w-full text-slate-700 py-2 border-b border-slate-100">
-                                    <ArrowRight className="w-4 h-4 text-slate-400" /> {c}
-                                </button>
-                            ))}
-                        </div>
-                    )}
-
-
                 </header>
-               
                 {/* LOGIN MODAL  */}
-                {showLogin && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 relative">
-                            <button onClick={() => setShowLogin(false)} className="absolute top-4 right-4 p-2 rounded-lg hover:bg-slate-100 transition-colors"><X className="w-5 h-5 text-slate-500" /></button>
-
-                            <div className="text-center mb-7">
-                                <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center mx-auto mb-3">
-                                    <span className="text-white font-black text-xl">B</span>
-                                </div>
-                                <h2 className="text-2xl font-black text-slate-900">Welcome Back</h2>
-                                <p className="text-slate-500 text-sm mt-1">Sign in to your BazaarBD account</p>
-                            </div>
-
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Email Address</label>
-                                    <input type="email" placeholder="you@example.com" value={loginForm.email} onChange={e => setLoginForm(f => ({ ...f, email: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 outline-none focus:border-indigo-500 transition-colors placeholder-slate-400" />
-                                </div>
-                                <div>
-                                    <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Password</label>
-                                    <div className="relative">
-                                        <input type={showPassword ? "text" : "password"} placeholder="Enter your password" value={loginForm.password} onChange={e => setLoginForm(f => ({ ...f, password: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 pr-12 text-sm text-slate-700 outline-none focus:border-indigo-500 transition-colors placeholder-slate-400" />
-                                        <button onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
-                                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                        </button>
-                                    </div>
-                                    <a href="#" className="text-xs text-indigo-600 hover:underline mt-1 block text-right">Forgot password?</a>
-                                </div>
-
-                                <button onClick={() => { setShowLogin(false); showNotif("Logged in successfully!"); }} className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3.5 rounded-xl transition-all mt-2">
-                                    Sign In
-                                </button>
-
-                                <div className="relative my-4">
-                                    <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200" /></div>
-                                    <div className="relative flex justify-center"><span className="bg-white px-3 text-xs text-slate-400">or continue with</span></div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-3">
-                                    <button className="flex items-center justify-center gap-2 border border-slate-200 rounded-xl py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
-                                        <span className="text-base">🇬</span> Google
-                                    </button>
-                                    <button className="flex items-center justify-center gap-2 border border-slate-200 rounded-xl py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
-                                        <span className="text-base">📘</span> Facebook
-                                    </button>
-                                </div>
-
-                                <p className="text-center text-sm text-slate-500 mt-2">
-                                    Don't have an account?{" "}
-                                    <button onClick={() => { setShowLogin(false); setShowRegister(true); }} className="text-indigo-600 font-semibold hover:underline">Create one</button>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                )}
                 {/* REGISTER MODAL */}
-                {showRegister && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 relative max-h-[90vh] overflow-y-auto">
-                            <button onClick={() => setShowRegister(false)} className="absolute top-4 right-4 p-2 rounded-lg hover:bg-slate-100 transition-colors"><X className="w-5 h-5 text-slate-500" /></button>
-
-                            <div className="text-center mb-6">
-                                <div className="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center mx-auto mb-3">
-                                    <User className="w-6 h-6 text-white" />
-                                </div>
-                                <h2 className="text-2xl font-black text-slate-900">Create Account</h2>
-                                <p className="text-slate-500 text-sm mt-1">Join millions of shoppers on BazaarBD</p>
-                            </div>
-
-                            <div className="space-y-4">
-                                {[
-                                    { label: "Full Name", key: "name", type: "text", placeholder: "Rahim Uddin" },
-                                    { label: "Email Address", key: "email", type: "email", placeholder: "rahim@example.com" },
-                                    { label: "Phone Number", key: "phone", type: "tel", placeholder: "+880 1XX XXXX XXXX" },
-                                    { label: "Password", key: "password", type: "password", placeholder: "Min. 8 characters" },
-                                    { label: "Confirm Password", key: "confirm", type: "password", placeholder: "Re-enter password" },
-                                ].map(field => (
-                                    <div key={field.key}>
-                                        <label className="text-sm font-semibold text-slate-700 mb-1.5 block">{field.label}</label>
-                                        <input type={field.type} placeholder={field.placeholder} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 outline-none focus:border-emerald-500 transition-colors placeholder-slate-400" />
-                                    </div>
-                                ))}
-
-                                <div className="flex items-start gap-3 pt-1">
-                                    <input type="checkbox" id="terms" className="mt-0.5 w-4 h-4 accent-emerald-600" />
-                                    <label htmlFor="terms" className="text-xs text-slate-500">
-                                        I agree to the <a href="#" className="text-emerald-600 hover:underline">Terms & Conditions</a> and <a href="#" className="text-emerald-600 hover:underline">Privacy Policy</a>
-                                    </label>
-                                </div>
-
-                                <button onClick={() => { setShowRegister(false); showNotif("Account created successfully! Welcome to BazaarBD 🎉"); }} className="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold py-3.5 rounded-xl transition-all">
-                                    Create Account
-                                </button>
-
-                                <p className="text-center text-sm text-slate-500">
-                                    Already have an account?{" "}
-                                    <button onClick={() => { setShowRegister(false); setShowLogin(true); }} className="text-indigo-600 font-semibold hover:underline">Sign in</button>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <SignUp setShowRegister={setShowRegister}
+                    setShowLogin={setShowLogin}
+                    showRegister={showRegister}
+                    showNotif={showNotif} />
+                {/* Wishlist */}
                 {/*CART SIDEBAR */}
-                {showCart && (
-                    <div className="fixed inset-0 z-50 flex">
-                        <div className="flex-1 bg-black/50" onClick={() => setShowCart(false)} />
-                        <div className="w-full max-w-md bg-white flex flex-col h-full shadow-2xl">
-                            <div className="flex items-center justify-between p-5 border-b border-slate-200">
-                                <h2 className="text-lg font-black text-slate-900 flex items-center gap-2"><ShoppingCart className="w-5 h-5 text-indigo-600" /> My Cart ({cartCount})</h2>
-                                <button onClick={() => setShowCart(false)} className="p-2 rounded-lg hover:bg-slate-100 transition-colors"><X className="w-5 h-5 text-slate-600" /></button>
-                            </div>
-
-                            <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                                {cartItems.length === 0 ? (
-                                    <div className="text-center py-16 text-slate-400">
-                                        <ShoppingCart className="w-12 h-12 mx-auto mb-3 opacity-40" />
-                                        <p className="font-medium">Your cart is empty</p>
-                                    </div>
-                                ) : cartItems.map(item => (
-                                    <div key={item.id} className="flex gap-3 bg-slate-50 rounded-xl p-3 border border-slate-200">
-                                        <img src={item.img} alt={item.name} className="w-16 h-16 object-cover rounded-lg flex-shrink-0" />
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-semibold text-slate-800 line-clamp-1">{item.name}</p>
-                                            <p className="text-indigo-600 font-black text-sm mt-0.5">৳{item.price.toLocaleString()}</p>
-                                            <div className="flex items-center gap-2 mt-2">
-                                                <button onClick={() => setCartItems(prev => prev.map(i => i.id === item.id ? { ...i, qty: Math.max(1, i.qty - 1) } : i))} className="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold flex items-center justify-center hover:bg-slate-100 transition-colors text-lg leading-none">-</button>
-                                                <span className="text-sm font-bold text-slate-800 w-5 text-center">{item.qty}</span>
-                                                <button onClick={() => setCartItems(prev => prev.map(i => i.id === item.id ? { ...i, qty: i.qty + 1 } : i))} className="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold flex items-center justify-center hover:bg-slate-100 transition-colors text-lg leading-none">+</button>
-                                                <button onClick={() => setCartItems(prev => prev.filter(i => i.id !== item.id))} className="ml-auto p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"><X className="w-4 h-4" /></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {cartItems.length > 0 && (
-                                <div className="p-5 border-t border-slate-200 bg-slate-50">
-                                    <div className="flex justify-between items-center mb-4">
-                                        <span className="text-slate-600 font-medium">Subtotal</span>
-                                        <span className="text-xl font-black text-slate-900">৳{cartTotal.toLocaleString()}</span>
-                                    </div>
-                                    <button onClick={() => { setShowPayment(true); }} className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2">
-                                        Proceed to Checkout <ArrowRight className="w-5 h-5" />
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                )}
                 {/* PAYMENT MODAL */}
                 {showPayment && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">

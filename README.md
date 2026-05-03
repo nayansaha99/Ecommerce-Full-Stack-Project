@@ -24,41 +24,40 @@ It is built with Next.js API routes, Prisma ORM, and MySQL, providing efficient 
 - Secure data handling with efficient queries
 
 ## Tech Stack
-
-Frontend: JSX,Tailwind CSS,Next.js
-
+  Frontend: JSX,Tailwind CSS,Next.js
 - Backend Framework: Next.js API Routes
 - Database: MySQL
 - ORM: Prisma
 - Authentication: JWT tokens with custom login, registration and OTP function
 
 ## Project Structure
-
+```
 ecommerce-platform/
 │
 ├── prisma/
-│ ├── schema.prisma
-│ └── migrations/
+│   ├── schema.prisma
+│   └── migrations/
 │
 ├── src/
-│ ├── app/api/
-│ │ ├── auth/
-│ │ ├── user/
-│ │ ├── product/
-│ │ ├── cart/
-│ │ ├── invoice/
-│ │ ├── payment/
-│ │ └── features/
-│ │
-│ ├── lib/
-│ ├── services/
-│ ├── repositories/
-│ ├── middleware/
-│ ├── utils/
-│ ├── constants/
-│ └── config/
+│   ├── app/api/
+│   │   ├── auth/
+│   │   ├── user/
+│   │   ├── product/
+│   │   ├── cart/
+│   │   ├── invoice/
+│   │   ├── payment/
+│   │   └── features/
+│   │
+│   ├── lib/
+│   ├── services/
+│   ├── repositories/
+│   ├── middleware/
+│   ├── utils/
+│   ├── constants/
+│   └── config/
 │
 ├── .env
 ├── package.json
 ├── README.md
 └── next.config.js
+```

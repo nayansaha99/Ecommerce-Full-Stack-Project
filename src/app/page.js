@@ -1,13 +1,18 @@
- import Appnavbar from '@/components/master/Appnavbar';
-import Footer from '@/components/master/footer';
-import Plainlayout from '@/components/master/Plainlayout';
 import React from 'react';
+import Plainlayout from '@/components/master/Plainlayout';
+import Hero from '@/components/products/Hero';
+import Shopbycategory from '@/components/products/shopbycategory';
+import FeaturedProduct from '@/components/products/FeaturedProduct';
+
+
+
  
  const page = () => {
     return (
        <Plainlayout>
-        <Appnavbar/>
-        <Footer/>
+         <Hero />
+         <Shopbycategory />
+         <FeaturedProduct/>
        </Plainlayout>
     );
  };
