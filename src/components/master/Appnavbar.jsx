@@ -1,6 +1,7 @@
 'use client'
 import React from 'react';
 import { useState, useEffect } from "react";
+import Link from 'next/link';
 import { motion, AnimatePresence } from "framer-motion";
 import {
     ShoppingCart, Heart, Search, Menu, X, ChevronLeft, ChevronRight,
@@ -13,6 +14,8 @@ import SignUp from '../user/SignUp';
 import WishList from '../products/WishList';
 import CartList from '../products/CartList';
 import MobileNav from '../products/MobileNav';
+import Payment from '../products/Payment';
+import Otpverification from '../user/Otpverification';
 
 const SPRING = { type: "spring", stiffness: 300, damping: 30 };
 
@@ -39,16 +42,17 @@ const backdropVar = {
 // ];
 const Appnavbar = () => {
     const [showLogin, setShowLogin] = useState(false);
-    const [wishlistOpen, setWishlistOpen] = useState(false);
+
     const [showRegister, setShowRegister] = useState(false);
-    const [showPayment, setShowPayment] = useState(false);
+
     const [showCart, setShowCart] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState("bkash");
-    const [paymentDone, setPaymentDone] = useState(false);
+
     const [searchQuery, setSearchQuery] = useState("");
     const [activeCategory, setActiveCategory] = useState("All");
     const [notification, setNotification] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
+    const [otpOpen, setOtpOpen] = useState(false);
 
     const showNotif = (msg, type = "success") => {
         setNotification({ msg, type });
@@ -82,9 +86,10 @@ const Appnavbar = () => {
                     </div>
                     <div className="flex items-center gap-4">
                         <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> Deliver to Dhaka</span>
-                        <button onClick={() => setShowLogin(true)} className="hover:text-white transition-colors">Sign In</button>
+                        <Link href={"/login"} className="hover:text-white transition-colors">Sign In</Link>
                         <span className="text-slate-600">|</span>
-                        <button onClick={() => setShowRegister(true)} className="hover:text-white transition-colors">Register</button>
+                        <Link href={"/signup"} className="hover:text-white transition-colors">Register</Link>
+                        <Link href={"/otpverification"} className="hover:text-amber-400 transition-colors font-semibold text-amber-500">Try OTP ↗</Link>
                     </div>
                 </div>
 
@@ -124,24 +129,62 @@ const Appnavbar = () => {
                         {/* Nav Actions */}
                         {/* {signinbutton} */}
                         <div className="flex items-center gap-1">
-                            <Login
+                            {/* <Login
                                 setShowRegister={setShowRegister}
                                 setShowLogin={setShowLogin}
                                 showLogin={showLogin}
                                 showNotif={showNotif}
-                            />
-                            <WishList
+                            /> */}
+                            <Link href={"/login"}> 
+                            <motion.button
+                                whileHover="hover"
+                                whileTap="tap"
+                                className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700"
+                            >
+                                <motion.div
+                                    variants={{
+                                        hover: { rotate: 15 },
+                                        tap: { scale: 0.9 },
+                                    }}
+                                >
+                                    <User className="w-5 h-5" />
+                                </motion.div>
+
+                                <span className="text-sm font-medium">Account</span>
+                            </motion.button>
+                            </Link>
+
+                          
+                            {/* <WishList
                                 setWishlistOpen={setWishlistOpen}
                                 wishlistOpen={wishlistOpen}
                                 showNotif={showNotif}
-
-                            />
-
-                            <CartList
+                                setShowPayment={setShowPayment}
+                            /> */}
+                            <motion.div
+                                whileTap={{ scale: 0.78 }}
+                                transition={SPRING}
+                            >
+                                <Link
+                                    href={"./wishlist"}
+                                    className="relative p-2.5 rounded-xl hover:bg-slate-100 transition-colors bg-red-100 text-slate-500 hover:text-rose-500 flex items-center justify-center"
+                                >
+                                    <Heart className="w-5 h-5" fill="none" strokeWidth={2} />
+                                </Link>
+                            </motion.div>
+                            {/* <CartList
                                 showCart={showCart}
                                 setShowCart={setShowCart}
                                 showNotif={showNotif}
-                            />
+                                 setShowPayment ={setShowPayment} 
+                            /> */}
+                            <Link href={"/cartlist"} className="relative flex items-center gap-2 px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white ml-1">
+                                <ShoppingCart className="w-5 h-5" />
+                                <span className="text-sm font-medium hidden sm:block">Cart</span>
+                                <span className="bg-amber-400 text-slate-900 text-xs rounded-full w-5 h-5 flex items-center justify-center font-black">1</span>
+
+                            </Link>
+
                             <MobileNav
                                 isOpen={isOpen}
                                 setIsOpen={setIsOpen}
@@ -176,116 +219,16 @@ const Appnavbar = () => {
                 </header>
                 {/* LOGIN MODAL  */}
                 {/* REGISTER MODAL */}
-                <SignUp setShowRegister={setShowRegister}
-                    setShowLogin={setShowLogin}
-                    showRegister={showRegister}
-                    showNotif={showNotif} />
+
                 {/* Wishlist */}
                 {/*CART SIDEBAR */}
                 {/* PAYMENT MODAL */}
-                {showPayment && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-8 relative">
-                            <button onClick={() => setShowPayment(false)} className="absolute top-4 right-4 p-2 rounded-lg hover:bg-slate-100 transition-colors"><X className="w-5 h-5 text-slate-500" /></button>
+                {/* <Payment
+                    setShowPayment={setShowPayment}
+                    showPayment={showPayment}
+                    setShowCart={setShowCart}
+                    showNotif={showNotif} /> */}
 
-                            {paymentDone ? (
-                                <div className="text-center py-8">
-                                    <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
-                                        <CheckCircle className="w-10 h-10 text-emerald-600" />
-                                    </div>
-                                    <h2 className="text-2xl font-black text-slate-900">Payment Successful!</h2>
-                                    <p className="text-slate-500 mt-2">Your order has been placed. Thank you for shopping at BazaarBD!</p>
-                                </div>
-                            ) : (
-                                <>
-                                    <div className="flex items-center gap-3 mb-6">
-                                        <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
-                                            <CreditCard className="w-5 h-5 text-indigo-600" />
-                                        </div>
-                                        <div>
-                                            <h2 className="text-xl font-black text-slate-900">Secure Checkout</h2>
-                                            <p className="text-sm text-slate-500">SSL encrypted & secure</p>
-                                        </div>
-                                    </div>
-
-                                    {/* Order Summary */}
-                                    <div className="bg-slate-50 rounded-xl p-4 mb-5 border border-slate-200">
-                                        <h3 className="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2"><Tag className="w-4 h-4 text-indigo-500" /> Order Summary</h3>
-                                        <div className="space-y-1.5">
-                                            {cartItems.map(i => (
-                                                <div key={i.id} className="flex justify-between text-sm">
-                                                    <span className="text-slate-600 truncate max-w-[220px]">{i.name.slice(0, 30)}... ×{i.qty}</span>
-                                                    <span className="text-slate-800 font-semibold">৳{(i.price * i.qty).toLocaleString()}</span>
-                                                </div>
-                                            ))}
-                                            <div className="border-t border-slate-200 pt-2 mt-2 flex justify-between">
-                                                <span className="font-bold text-slate-700">Total</span>
-                                                <span className="font-black text-indigo-700 text-lg">৳{cartTotal.toLocaleString()}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Payment Methods */}
-                                    <h3 className="text-sm font-bold text-slate-700 mb-3">Select Payment Method</h3>
-                                    <div className="grid grid-cols-3 gap-3 mb-5">
-                                        {[
-                                            { key: "bkash", label: "bKash", color: "bg-pink-600", icon: "📱", sub: "Mobile Banking" },
-                                            { key: "nagad", label: "Nagad", color: "bg-orange-500", icon: "💸", sub: "Mobile Banking" },
-                                            { key: "card", label: "Card", color: "bg-blue-600", icon: "💳", sub: "VISA / MasterCard" },
-                                        ].map(method => (
-                                            <button
-                                                key={method.key}
-                                                onClick={() => setSelectedPayment(method.key)}
-                                                className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${selectedPayment === method.key ? "border-indigo-500 bg-indigo-50" : "border-slate-200 bg-white hover:border-slate-300"}`}
-                                            >
-                                                <span className="text-2xl">{method.icon}</span>
-                                                <span className={`text-xs font-black px-2 py-0.5 rounded-md text-white ${method.color}`}>{method.label}</span>
-                                                <span className="text-xs text-slate-400">{method.sub}</span>
-                                            </button>
-                                        ))}
-                                    </div>
-
-                                    {/* Payment Input */}
-                                    <div className="mb-5">
-                                        {selectedPayment !== "card" ? (
-                                            <div>
-                                                <label className="text-sm font-semibold text-slate-700 mb-1.5 block">
-                                                    {selectedPayment === "bkash" ? "bKash" : "Nagad"} Account Number
-                                                </label>
-                                                <input type="tel" placeholder="+880 1XX XXXX XXXX" className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition-colors" />
-                                            </div>
-                                        ) : (
-                                            <div className="space-y-3">
-                                                <div>
-                                                    <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Card Number</label>
-                                                    <input type="text" placeholder="1234 5678 9012 3456" className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition-colors" />
-                                                </div>
-                                                <div className="grid grid-cols-2 gap-3">
-                                                    <div>
-                                                        <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Expiry</label>
-                                                        <input type="text" placeholder="MM / YY" className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition-colors" />
-                                                    </div>
-                                                    <div>
-                                                        <label className="text-sm font-semibold text-slate-700 mb-1.5 block">CVV</label>
-                                                        <input type="text" placeholder="•••" className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition-colors" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <button onClick={handlePay} className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-black py-4 rounded-xl transition-all flex items-center justify-center gap-2 text-base">
-                                        <Shield className="w-5 h-5" /> Pay ৳{cartTotal.toLocaleString()} Securely
-                                    </button>
-
-                                    <p className="text-center text-xs text-slate-400 mt-3 flex items-center justify-center gap-1">
-                                        <Shield className="w-3 h-3" /> Protected by SSL 256-bit encryption
-                                    </p>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                )}
             </div>
         </>
     );

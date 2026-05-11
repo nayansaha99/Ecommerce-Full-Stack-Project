@@ -3,24 +3,11 @@
 @tailwind utilities;
 
 
- @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-  @keyframes popIn{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
-  @keyframes slideFromRight{from{transform:translateX(100%)}to{transform:translateX(0)}}
-  @keyframes slideFromLeft{from{transform:translateX(-100%)}to{transform:translateX(0)}}
-  @keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
-  @keyframes toastIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
-  .ns::-webkit-scrollbar{display:none}.ns{-ms-overflow-style:none;scrollbar-width:none}
-  .cl2{overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-  .ch{transition:transform .2s,box-shadow .2s}.ch:hover{transform:translateY(-4px);box-shadow:0 14px 36px rgba(0,0,0,.12)}
-  .hfocus:focus{border-color:#f97316!important}
-  .bs:active{transform:scale(.97)}
-  .lnk:hover{color:#f97316!important}
-  .pay-tab{transition:all .15s}
-  .hov-org:hover{background:#f97316!important;color:#fff!important}
-  @media(max-width:639px){
-    .hide-mobile{display:none!important}
-  }
-  @media(min-width:640px) and (max-width:1023px){
-    .hide-tablet{display:none!important}
-  }
+ /* @keyframes loading-bar {
+  0% { left: -50%; }
+  100% { left: 100%; }
+}
+
+.animate-loading-bar {
+  animation: loading-bar 1.5s linear infinite;
+} */

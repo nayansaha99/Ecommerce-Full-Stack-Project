@@ -7,7 +7,7 @@ import FeaturedProduct from '@/components/products/FeaturedProduct';
 
 
  
- const page = () => {
+ const  page = async ({}) => {
     return (
        <Plainlayout>
          <Hero />
@@ -17,4 +17,4 @@ import FeaturedProduct from '@/components/products/FeaturedProduct';
     );
  };
  
- export default page;
+ export default  page;

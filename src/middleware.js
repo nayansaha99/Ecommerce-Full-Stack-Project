@@ -18,5 +18,5 @@ export async function middleware(req,res){
 }
 
 export const config = {
-    matcher: ['/api/cart/:path*', '/api/invoice/:path*','/api/user/profile','/api/wish/:path*','/api/user/review','/api/user/verify-otp']
+    matcher: ['/api/cart/:path*', '/api/invoice/:path*','/api/user/profile','/api/wish/:path*','/api/user/review','/api/user/verify-otp','/api/user/resend-otp','/api/user/updateOtpExpiry']
 }

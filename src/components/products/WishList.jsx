@@ -1,15 +1,33 @@
 'use client'
-import React, { useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
+import { useSearchParams, useRouter } from "next/navigation"
+import React, { useState, useEffect } from 'react';
+const SPRING = { type: "spring", stiffness: 300, damping: 30 };
+import Link from 'next/link';
 import {
     ShoppingCart, Heart, Search, Menu, X, ChevronLeft, ChevronRight,
     Star, Truck, Shield, RefreshCw, Headphones, Eye, EyeOff,
     CreditCard, Smartphone, Wallet, CheckCircle, User, LogIn,
     MapPin, Bell, Package, ArrowRight, Zap, Tag
 } from "lucide-react";
-const WishList = ({ setWishlistOpen, wishlistOpen, showNotif }) => {
+import Payment from '../products/Payment';
+const WishList = ({ showNotif, setShowPayment }) => {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [wishItems, setWishItems] = useState([])
-   
+    const [wishlistOpen, setWishlistOpen] = useState(false);
+
+    useEffect(() => {
+        const popup = searchParams.get("popup");
+        setWishlistOpen(true);
+
+    }, [searchParams]);
+    const handleclose = () => {
+        setWishlistOpen(false);
+        router.push("/AllProducts");
+    }
+
+
     const addToWishlist = (product) => {
         setWishItems(prev => {
             const exists = prev.find(i => i.id === product.id);
@@ -21,14 +39,18 @@ const WishList = ({ setWishlistOpen, wishlistOpen, showNotif }) => {
     const wishTotal = wishItems.reduce((s, i) => s + i.price * i.qty, 0);
     const wishCount = wishItems.reduce((s, i) => s + i.qty, 0);
 
-  
+
     return (
         <div>
-            <button
+            {/* <motion.button
                 onClick={() => setWishlistOpen(true)}
-                className="relative p-2.5 rounded-lg hover:bg-slate-100 transition-colors text-slate-700">
-                <Heart className="w-5 h-5" />
-            </button>
+                whileTap={{ scale: 0.78 }}
+                transition={SPRING}
+                className="relative p-2.5 rounded-xl hover:bg-slate-100 transition-colors   bg-red-100 text-slate-500 hover:text-rose-500 ">
+                <Heart className="w-5 h-5"
+                    fill="none"
+                    strokeWidth={2} />
+            </motion.button> */}
             <AnimatePresence>
                 {wishlistOpen && (
                     <motion.div
@@ -40,7 +62,7 @@ const WishList = ({ setWishlistOpen, wishlistOpen, showNotif }) => {
                         <motion.div
                             className="flex-1 bg-black/50"
                             onClick={() => {
-                                setWishlistOpen(false)
+                                handleclose()
                                 console.log("clicked")
                             }}
                             initial={{ opacity: 0 }}
@@ -59,7 +81,7 @@ const WishList = ({ setWishlistOpen, wishlistOpen, showNotif }) => {
                                 <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
                                     <Heart className="w-4 h-4 text-rose-600 fill-rose-600" /> My Wishlist ({wishCount})
                                 </h2>
-                                <button onClick={() => setWishlistOpen(false)} className="p-2 rounded-lg hover:bg-slate-100 transition-colors">
+                                <button onClick={() => handleclose()} className="p-2 rounded-lg hover:bg-slate-100 transition-colors">
                                     <X className="w-5 h-5 text-slate-600" />
                                 </button>
                             </div>
@@ -89,17 +111,18 @@ const WishList = ({ setWishlistOpen, wishlistOpen, showNotif }) => {
                                 ))}
                             </div>
 
-                            {wishItems.length > 0 && (
-                                <div className="p-5 border-t border-slate-200 bg-slate-50">
-                                    <div className="flex justify-between items-center mb-4">
-                                        <span className="text-slate-600 font-medium">Subtotal</span>
-                                        <span className="text-xl font-black text-slate-900">৳{wishTotal.toLocaleString()}</span>
-                                    </div>
-                                    <button onClick={() => { setShowPayment(true); }} className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2">
-                                        Proceed to Checkout <ArrowRight className="w-5 h-5" />
-                                    </button>
+
+                            <div className="p-5 border-t border-slate-200 bg-slate-50">
+                                <div className="flex justify-between items-center mb-4">
+                                    <span className="text-slate-600 font-medium">Subtotal</span>
+                                    <span className="text-xl font-black text-slate-900">৳{wishTotal.toLocaleString()}</span>
                                 </div>
-                            )}
+                                <Link href={"./payment"} className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2">
+                                    Proceed to Checkout
+                                    <ArrowRight className="w-5 h-5" />
+                                </Link>
+                            </div>
+
                         </motion.div>
                     </motion.div>
                 )}

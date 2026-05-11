@@ -1,4 +1,4 @@
-# Ecommerce Platform Backend
+# Ecommerce Project
 
 This project is the Full stack for an ecommerce platform, independently developed to ensure robust functionality and scalability.  
 It is built with Next.js API routes, Prisma ORM, and MySQL, providing efficient and secure data handling for all core ecommerce operations.

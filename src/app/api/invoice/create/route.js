@@ -29,7 +29,7 @@ export async function GET(req, res) {
             }
             totalAmount += element['qty'] * price;
         })
- 
+
         let vat = totalAmount * 0.05 // 5% Vat
         let payable = totalAmount + vat;
 
@@ -40,10 +40,7 @@ export async function GET(req, res) {
         let Profile = await prisma.customer_profiles.findUnique({ where: { user_id: id } })
         let cus_details = `Name:${Profile['cus_name']}, Email:${cus_email}, Address:${Profile['cus_add']}, Phone:${Profile['cus_phone']}`;
         let ship_details = `Name:${Profile['ship_name']}, City:${Profile['ship_city']}, Address:${Profile['ship_add']}, Phone:${Profile['ship_phone']}`;
-
-
         // =============Step 03: Transaction & Other's ID===========================================================
-
         let tran_id = (Math.floor(10000000 + Math.random() * 90000000)).toString();
         let val_id = "0";
         let delivery_status = "Pending"

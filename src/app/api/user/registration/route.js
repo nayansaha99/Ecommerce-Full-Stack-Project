@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { SendEmail } from "@/utility/EmailUtility";
-import { CreateToken } from  "@/utility/JWTTokenHelper";
+import { CreateToken } from "@/utility/JWTTokenHelper";
 export async function POST(req, res) {
     try {
         const prisma = new PrismaClient();
@@ -13,15 +13,16 @@ export async function POST(req, res) {
                 password: reqBody.password,
                 otp: code,
                 role: "user",
+                otpExpireAt: new Date(Date.now() + 60 * 1000),
                 customer_profiles: {
                     create: {
                         cus_name: reqBody.cus_name,
-                        cus_add: reqBody.cus_add,
-                        cus_city: reqBody.cus_city,
-                        cus_state: reqBody.cus_state,
+                        cus_add: "0",
+                        cus_city: "0",
+                        cus_state: "0",
                         cus_postcode: "0",
                         cus_country: "0",
-                        cus_phone: "0",
+                        cus_phone: reqBody.cus_phone,
                         ship_name: "0",
                         ship_add: "0",
                         ship_city: "0",
@@ -42,8 +43,7 @@ export async function POST(req, res) {
         const token = await CreateToken(reqBody.email, reqBody.id);
         const expireDuration = new Date(Date.now() + 24 * 60 * 60 * 1000);//24hours
         const cookieString = `token=${token}; expires=${expireDuration.toUTCString()}; path=/; HttpOnly;SameSite=Strict`;
-
-        return NextResponse.json({ status: "success", data: {result,token:token}, message: "User Registered Successfully, 6 Digit OTP Code has been sent to your email" },{status:200,headers:{"set-Cookie":cookieString}});
+        return NextResponse.json({ status: "success", data: { result, token: token }, message: "User Registered Successfully, 6 Digit OTP Code has been sent to your email" }, { status: 200, headers: { "set-Cookie": cookieString } });
     }
     catch (e) {
         return NextResponse.json({ status: "fail", data: e.toString() })

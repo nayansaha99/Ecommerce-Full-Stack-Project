@@ -1,14 +1,37 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
+import Payment from '../products/Payment';
+import Link from 'next/link';
+import { useSearchParams, useRouter } from "next/navigation"
 import {
     ShoppingCart, Heart, Search, Menu, X, ChevronLeft, ChevronRight,
     Star, Truck, Shield, RefreshCw, Headphones, Eye, EyeOff,
     CreditCard, Smartphone, Wallet, CheckCircle, User, LogIn,
     MapPin, Bell, Package, ArrowRight, Zap, Tag
 } from "lucide-react";
-const CartList = ({showCart, setShowCart, showNotif}) => {
+import HomeView from '@/app/page';
+import { useNotif } from '../master/SuccessTrigger';
+const CartList = ({}) => {
+    const router = useRouter();
     const [cartItems, setCartItems] = useState([]);
+    const searchParams = useSearchParams();
+    const [showCart, setShowCart] = useState(false);
+    const notif = useNotif();
+    const showNotif = notif?.showNotif;
+    useEffect(() => {
+        const popup = searchParams.get("popup");
+
+        // This ensures showCart is always in sync with the URL
+        setShowCart(true);
+
+    }, [searchParams.toString()]);
+
+    const handleclose = () => {
+        setShowCart(false);
+        router.push("/AllProducts");
+    }
+
     const addToCart = (product) => {
         setCartItems(prev => {
             const exists = prev.find(i => i.id === product.id);
@@ -17,31 +40,33 @@ const CartList = ({showCart, setShowCart, showNotif}) => {
         });
         showNotif(`"${product.name.slice(0, 28)}..." added to cart`);
     };
-   
+
     const cartTotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
     const cartCount = cartItems.reduce((s, i) => s + i.qty, 0);
+    
+
     return (
         <div>
-            <button onClick={() => setShowCart(true)} className="relative flex items-center gap-2 px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white ml-1">
+            {/* <button onClick={() => setShowCart(true)} className="relative flex items-center gap-2 px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white ml-1">
                 <ShoppingCart className="w-5 h-5" />
                 <span className="text-sm font-medium hidden sm:block">Cart</span>
                 {cartCount > 0 && (
                     <span className="bg-amber-400 text-slate-900 text-xs rounded-full w-5 h-5 flex items-center justify-center font-black">{cartCount}</span>
                 )}
-            </button>
+            </button> */}
 
-            
+
             <AnimatePresence>
                 {showCart && (
                     <motion.div
-                        className="fixed inset-0 z-50 flex"
+                        className="fixed inset-0 z-50 flex bg-black/90 backdrop-blur-sm"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                     >
                         <motion.div
                             className="flex-1 bg-black/50"
-                            onClick={() => setShowCart(false)}
+                            onClick={() => handleclose()}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
@@ -58,7 +83,7 @@ const CartList = ({showCart, setShowCart, showNotif}) => {
                                 <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
                                     <ShoppingCart className="w-5 h-5 text-indigo-600" /> My Cart ({cartCount})
                                 </h2>
-                                <button onClick={() => setShowCart(false)} className="p-2 rounded-lg hover:bg-slate-100 transition-colors">
+                                <button onClick={() => handleclose()} className="p-2 rounded-lg hover:bg-slate-100 transition-colors">
                                     <X className="w-5 h-5 text-slate-600" />
                                 </button>
                             </div>
@@ -88,17 +113,18 @@ const CartList = ({showCart, setShowCart, showNotif}) => {
                                 ))}
                             </div>
 
-                            {cartItems.length > 0 && (
-                                <div className="p-5 border-t border-slate-200 bg-slate-50">
-                                    <div className="flex justify-between items-center mb-4">
-                                        <span className="text-slate-600 font-medium">Subtotal</span>
-                                        <span className="text-xl font-black text-slate-900">৳{cartTotal.toLocaleString()}</span>
-                                    </div>
-                                    <button onClick={() => { setShowPayment(true); }} className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2">
-                                        Proceed to Checkout <ArrowRight className="w-5 h-5" />
-                                    </button>
+
+                            <div className="p-5 border-t border-slate-200 bg-slate-50">
+                                <div className="flex justify-between items-center mb-4">
+                                    <span className="text-slate-600 font-medium">Subtotal</span>
+                                    <span className="text-xl font-black text-slate-900">৳{cartTotal.toLocaleString()}</span>
                                 </div>
-                            )}
+                                <Link href={"./payment"} className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2">
+                                    Proceed to Checkout
+                                    <ArrowRight className="w-5 h-5" />
+                                </Link>
+                            </div>
+
                         </motion.div>
                     </motion.div>
                 )}

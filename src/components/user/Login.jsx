@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import {
     ShoppingCart, Heart, Search, Menu, X, ChevronLeft, ChevronRight,
@@ -8,29 +8,41 @@ import {
     MapPin, Bell, Package, ArrowRight, Zap, Tag
 } from "lucide-react";
 import Appnavbar from '../master/Appnavbar';
-const Login = ({ setShowRegister, setShowLogin,showLogin,showNotif}) => {
-     const [loginForm, setLoginForm] = useState({ email: "", password: "" });
-     const [showPassword, setShowPassword] = useState(false);
-     
+import Link from 'next/link';
+import { useSearchParams, useRouter } from "next/navigation"
+const Login = ({ showNotif }) => {
+    const [loginForm, setLoginForm] = useState({ email: "", password: "" });
+    const [showPassword, setShowPassword] = useState(false);
+    const [showLogin, setShowLogin] = useState(false);
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    useEffect(() => {
+        const popup = searchParams.get("popup");
+        // This ensures showCart is always in sync with the URL
+        setShowLogin(true);
+    }, [searchParams.toString()]);
+
+    const handleclose = () => {
+        setShowLogin(false);
+        router.back();
+    }
+
+    useEffect(() => {
+        const handleBack = () => {
+            router.push("/");
+        };
+
+        window.history.pushState(null, "", window.location.href);
+        window.addEventListener("popstate", handleBack);
+
+        return () => {
+            window.removeEventListener("popstate", handleBack);
+        };
+    }, []);
+    
     return (
         <div>
-            <motion.button
-                onClick={() => setShowLogin(true)}
-                whileHover="hover"
-                whileTap="tap"
-                className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700"
-            >
-                <motion.div
-                    variants={{
-                        hover: { rotate: 15 },
-                        tap: { scale: 0.9 },
-                    }}
-                >
-                    <User className="w-5 h-5" />
-                </motion.div>
 
-                <span className="text-sm font-medium">Account</span>
-            </motion.button>
             <AnimatePresence>
                 {showLogin && (
                     <motion.div
@@ -46,7 +58,7 @@ const Login = ({ setShowRegister, setShowLogin,showLogin,showNotif}) => {
                             transition={{ duration: 0.25 }}
                             className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 relative"
                         >
-                            <button onClick={() => setShowLogin(false)} className="absolute top-4 right-4 p-2 rounded-lg hover:bg-slate-100 transition-colors"><X className="w-5 h-5 text-slate-500" /></button>
+                            <button onClick={() => handleclose()} className="absolute top-4 right-4 p-2 rounded-lg hover:bg-slate-100 transition-colors"><X className="w-5 h-5 text-slate-500" /></button>
 
                             <div className="text-center mb-7">
                                 <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center mx-auto mb-3">
@@ -93,14 +105,19 @@ const Login = ({ setShowRegister, setShowLogin,showLogin,showNotif}) => {
 
                                 <p className="text-center text-sm text-slate-500 mt-2">
                                     Don't have an account?{" "}
-                                    <button onClick={() => { setShowLogin(false); setShowRegister(true); }} className="text-indigo-600 font-semibold hover:underline">Create one</button>
+                                    <Link
+                                        href={"/signup"}
+                                        className="text-indigo-600 font-semibold hover:underline"
+                                    >
+                                        Create one
+                                    </Link>
                                 </p>
                             </div>
                         </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
-          
+
         </div>
     );
 };

@@ -1,43 +1,65 @@
 'use client'
 import React from 'react';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from 'next/link';
+import { useRouter } from "next/navigation";
 import {
-    ShoppingCart, Heart, Search, Menu, X, ChevronLeft, ChevronRight,
-    Star, Truck, Shield, RefreshCw, Headphones, Eye, EyeOff,
-    CreditCard, Smartphone, Wallet, CheckCircle, User, LogIn,
-    MapPin, Bell, Package, ArrowRight, Zap, Tag
+  ShoppingCart, Heart, Search, Menu, X, ChevronLeft, ChevronRight,
+  Star, Truck, Shield, RefreshCw, Headphones, Eye, EyeOff,
+  CreditCard, Smartphone, Wallet, CheckCircle, User, LogIn,
+  MapPin, Bell, Package, ArrowRight, Zap, Tag
 } from "lucide-react";
+import useBlockBack from '../master/useBlockBack';
+import useRedirectBackToHome from '../master/useBlockBack';
+
 const PRODUCTS = [
-  { id:1,  name:"Banarasi Silk Saree",       price:4500,   original:6000,   category:"Dresses",   rating:4.8, reviews:124, badge:"HOT",  img:"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&q=85", description:"Luxurious Banarasi weave with intricate zari work." },
-  { id:2,  name:"Jamdani Cotton Kurti",       price:1850,   original:2400,   category:"Dresses",   rating:4.6, reviews:98,  badge:"SALE", img:"https://images.unsplash.com/photo-1564584217132-2271feaeb3c5?w=600&q=85", description:"Breathable Dhaka muslin with traditional block-print motifs." },
-  { id:3,  name:"Muslin Anarkali Dress",      price:2200,   original:2800,   category:"Dresses",   rating:4.5, reviews:67,  badge:"", img:"https://images.unsplash.com/photo-1564584217132-2271feaeb3c5?w=600&q=85", description:"Breathable Dhaka muslin with traditional block-print motifs." },
-  { id:4,  name:"Jamdani Saree – Heritage",   price:8500,   original:11000,  category:"Dresses",   rating:4.9, reviews:72,  badge:"TOP",  img:"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&q=85", description:"Luxurious Banarasi weave with intricate zari work." },
-  { id:5,  name:"22K Gold Bangles Set",       price:32000,  original:38000,  category:"Ornaments", rating:4.9, reviews:54,  badge:"NEW",  img:"https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&q=85", description:"22-karat gold bangles with intricate filigree detailing." },
-  { id:6,  name:"Pearl Drop Necklace",        price:4200,   original:5500,   category:"Ornaments", rating:4.7, reviews:89,  badge:"SALE", img:"https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=85", description:"Freshwater pearl necklace with sterling silver clasp." },
-  { id:7,  name:"Kundan Bridal Choker",       price:7800,   original:9500,   category:"Ornaments", rating:4.8, reviews:41,  badge:"HOT",  img:"https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=85", description:"Handcrafted kundan choker with polki stone settings." },
-  { id:8,  name:"Gold Jhumka Earrings",       price:3600,   original:4500,   category:"Ornaments", rating:4.6, reviews:113, badge:"",     img:"https://images.unsplash.com/photo-1630019852942-f89202989a59?w=600&q=85", description:"Traditional jhumka earrings with meenakari enamel work." },
+  { id: 1, name: "Banarasi Silk Saree", price: 4500, original: 6000, category: "Dresses", rating: 4.8, reviews: 124, badge: "HOT", img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&q=85", description: "Luxurious Banarasi weave with intricate zari work." },
+  { id: 2, name: "Jamdani Cotton Kurti", price: 1850, original: 2400, category: "Dresses", rating: 4.6, reviews: 98, badge: "SALE", img: "https://images.unsplash.com/photo-1564584217132-2271feaeb3c5?w=600&q=85", description: "Breathable Dhaka muslin with traditional block-print motifs." },
+  { id: 3, name: "Muslin Anarkali Dress", price: 2200, original: 2800, category: "Dresses", rating: 4.5, reviews: 67, badge: "", img: "https://images.unsplash.com/photo-1564584217132-2271feaeb3c5?w=600&q=85", description: "Breathable Dhaka muslin with traditional block-print motifs." },
+  { id: 4, name: "Jamdani Saree – Heritage", price: 8500, original: 11000, category: "Dresses", rating: 4.9, reviews: 72, badge: "TOP", img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&q=85", description: "Luxurious Banarasi weave with intricate zari work." },
+  { id: 5, name: "22K Gold Bangles Set", price: 32000, original: 38000, category: "Ornaments", rating: 4.9, reviews: 54, badge: "NEW", img: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&q=85", description: "22-karat gold bangles with intricate filigree detailing." },
+  { id: 6, name: "Pearl Drop Necklace", price: 4200, original: 5500, category: "Ornaments", rating: 4.7, reviews: 89, badge: "SALE", img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=85", description: "Freshwater pearl necklace with sterling silver clasp." },
+  { id: 7, name: "Kundan Bridal Choker", price: 7800, original: 9500, category: "Ornaments", rating: 4.8, reviews: 41, badge: "HOT", img: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=85", description: "Handcrafted kundan choker with polki stone settings." },
+  { id: 8, name: "Gold Jhumka Earrings", price: 3600, original: 4500, category: "Ornaments", rating: 4.6, reviews: 113, badge: "", img: "https://images.unsplash.com/photo-1630019852942-f89202989a59?w=600&q=85", description: "Traditional jhumka earrings with meenakari enamel work." },
 ];
 const BADGE_STYLES = {
-  HOT:  "bg-orange-500 text-white",
-  NEW:  "bg-emerald-500 text-white",
+  HOT: "bg-orange-500 text-white",
+  NEW: "bg-emerald-500 text-white",
   SALE: "bg-rose-500 text-white",
-  TOP:  "bg-indigo-600 text-white",
+  TOP: "bg-indigo-600 text-white",
 };
 const SPRING = { type: "spring", stiffness: 300, damping: 30 };
 const FeaturedProduct = () => {
+  const router = useRouter();
   const [activeCategory, setActiveCategory] = useState("All");
-  const [searchQuery,    setSearchQuery]    = useState("");
-    const filtered = PRODUCTS.filter(p => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filtered = PRODUCTS.filter(p => {
     const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchCat    = activeCategory === "All" || p.category === activeCategory;
+    const matchCat = activeCategory === "All" || p.category === activeCategory;
     return matchSearch && matchCat;
+
   });
+  useEffect(() => {
+    const handleBack = () => {
+      router.push("/");
+    };
+
+    window.history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", handleBack);
+
+    return () => {
+      window.removeEventListener("popstate", handleBack);
+    };
+  }, []);
+
+
 
   return (
     <div>
-      <section className="max-w-7xl mx-auto px-4 mt-10 mb-14">
+      <section id="featured" className="max-w-7xl mx-auto px-4 mt-10 mb-14">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl font-black text-slate-900 tracking-tight">
@@ -63,9 +85,12 @@ const FeaturedProduct = () => {
         )}
 
         {/* THE FIXED PRODUCT GRID */}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
           {filtered.map(product => {
             return (
+
               <motion.article
                 key={product.id}
                 whileHover={{ y: -6, boxShadow: "0 20px 48px -8px rgba(99,102,241,0.16)" }}
@@ -78,30 +103,31 @@ const FeaturedProduct = () => {
                   This makes ALL cards exactly the same height regardless of source image dimensions.
                 */}
                 <div className="relative w-full aspect-[3/4] bg-slate-100 overflow-hidden flex-shrink-0">
-                  <img
-                    src={product.img}
-                    alt={product.name}
-                    className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                    loading="lazy"
-                  />
+                  <Link href={"./productdetails"} key={""} className="contents">
+                    <img
+                      src={product.img}
+                      alt={product.name}
+                      className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
 
-                  {product.badge && (
-                    <span className={`absolute top-2.5 left-2.5 text-[11px] font-black px-2.5 py-1 rounded-lg z-10 ${BADGE_STYLES[product.badge] ?? "bg-slate-700 text-white"}`}>
-                      {product.badge}
-                    </span>
-                  )}
-               
+                    {product.badge && (
+                      <span className={`absolute top-2.5 left-2.5 text-[11px] font-black px-2.5 py-1 rounded-lg z-10 ${BADGE_STYLES[product.badge] ?? "bg-slate-700 text-white"}`}>
+                        {product.badge}
+                      </span>
+                    )}
+
                     <span className="absolute top-2.5 right-11 bg-white/90 text-rose-600 text-[11px] font-black px-2 py-1 rounded-lg border border-rose-100 z-10">
-                     Discount
+                      Discount
                     </span>
-                
 
+                  </Link>
                   {/*
                     WISHLIST BUTTON — toggles between outline ♡ and filled ♥
                     clicking → adds to wishlistItems state AND opens the drawer
                   */}
                   <motion.button
-                    onClick={e => { e.stopPropagation();}}
+                    onClick={e => { e.stopPropagation(); }}
                     whileTap={{ scale: 0.72 }}
                     transition={SPRING}
                     aria-label="Add to wishlist"
@@ -113,6 +139,7 @@ const FeaturedProduct = () => {
                 </div>
 
                 {/* Card body */}
+                <Link href={"./productdetails"} key={""} className="contents"></Link>
                 <div className="p-4 flex flex-col flex-1">
                   <p className="text-[11px] font-semibold text-indigo-500 uppercase tracking-wide mb-1">{product.category}</p>
                   <h3 className="text-sm font-bold text-slate-900 leading-snug line-clamp-2 mb-1.5 flex-1">{product.name}</h3>
@@ -129,7 +156,7 @@ const FeaturedProduct = () => {
                     <span className="text-lg font-black text-slate-900">৳{product.price.toLocaleString()}</span>
                     <span className="text-xs text-slate-400 line-through">৳{product.original.toLocaleString()}</span>
                   </div>
-
+                  <Link href={""} ></Link>
                   <motion.button
                     whileTap={{ scale: 0.96 }}
                     transition={SPRING}
@@ -138,23 +165,26 @@ const FeaturedProduct = () => {
                     <ShoppingCart className="w-4 h-4" /> Add to Cart
                   </motion.button>
                 </div>
+
+
               </motion.article>
             );
           })}
+
         </div>
       </section>
-       <section className="bg-indigo-600 py-20 px-4">
-              <div className="max-w-xl mx-auto text-center">
-                <Bell className="w-8 h-8 text-indigo-200 mx-auto mb-3" />
-                <h2 className="text-2xl font-black text-white mb-2">Stay in the Loop</h2>
-                <p className="text-indigo-200 text-sm mb-6">Exclusive deals & new arrivals delivered to your inbox.</p>
-                <div className="flex gap-2">
-                  <input type="email" placeholder="Your email address"
-                    className="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-indigo-200 text-sm outline-none focus:border-white/60 transition-colors" />
-                  <button className="bg-white text-indigo-700 font-bold px-5 py-3 rounded-xl hover:bg-indigo-50 transition-colors text-sm whitespace-nowrap">Subscribe</button>
-                </div>
-              </div>
-            </section>
+      <section className="bg-indigo-600 py-20 px-4">
+        <div className="max-w-xl mx-auto text-center">
+          <Bell className="w-8 h-8 text-indigo-200 mx-auto mb-3" />
+          <h2 className="text-2xl font-black text-white mb-2">Stay in the Loop</h2>
+          <p className="text-indigo-200 text-sm mb-6">Exclusive deals & new arrivals delivered to your inbox.</p>
+          <div className="flex gap-2">
+            <input type="email" placeholder="Your email address"
+              className="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-indigo-200 text-sm outline-none focus:border-white/60 transition-colors" />
+            <button className="bg-white text-indigo-700 font-bold px-5 py-3 rounded-xl hover:bg-indigo-50 transition-colors text-sm whitespace-nowrap">Subscribe</button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
