@@ -11,7 +11,7 @@ import {
     MapPin, Bell, Package, ArrowRight, Zap, Tag
 } from "lucide-react";
 import Payment from '../products/Payment';
-const WishList = ({ showNotif, setShowPayment }) => {
+const WishList = ({ }) => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [wishItems, setWishItems] = useState([])

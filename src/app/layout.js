@@ -6,9 +6,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <SuccessTrigger>
           {children}
-        </SuccessTrigger>
         <NextTopLoader />
       </body>
     </html>

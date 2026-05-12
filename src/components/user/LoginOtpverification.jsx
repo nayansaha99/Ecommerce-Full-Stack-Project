@@ -20,7 +20,7 @@ const otpModalVar = { hidden: { opacity: 0, scale: 0.94, y: 16 }, visible: { opa
 const backdropVar = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.25 } }, exit: { opacity: 0, transition: { duration: 0.2 } } };
 const TOTAL_DIGITS = 6;
 const RESEND_SECS = 60;
-const Otpverification = (props) => {
+const LoginOtpverification = (props) => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [otpOpen, setOtpOpen] = useState(false);
@@ -62,11 +62,7 @@ const Otpverification = (props) => {
                 setSubmit(false);
                 if (res['status'] === "success") {
                     console.log(res.data);
-                    SuccessToast("Registration Completed. Welcome to BazaarBD");
-
-                    await fetch("/api/user/logout", {
-                        method: "GET"
-                    });
+                    SuccessToast("Login Successfull");
                     await new Promise(r => setTimeout(r, 300));
                     router.push("/");
                 }
@@ -389,4 +385,4 @@ const Otpverification = (props) => {
     );
 };
 
-export default Otpverification;
+export default LoginOtpverification;

@@ -1,21 +1,20 @@
 import CartList from '@/components/products/CartList';
-import Plainlayout from '@/components/master/Plainlayout';
-import React from 'react';
+import Masterlayout from '@/components/master/masterlayout';
 import Hero from '@/components/products/Hero';
 import FeaturedProduct from '@/components/products/FeaturedProduct';
 import Shopbycategory from '@/components/products/Shopbycategory';
 import ProductDetails from '@/components/products/ProductDetails';
 import AddedCart from '@/components/master/AddedCart';
+import { cookies } from 'next/headers';
 
-
-const page = () => {
-
+const page = async () => {
+ 
     return (
-        <Plainlayout>
-            <AddedCart/>
+        <Masterlayout>
+            <AddedCart />
             <FeaturedProduct />
             <CartList />
-        </Plainlayout>
+        </Masterlayout>
     );
 };
 

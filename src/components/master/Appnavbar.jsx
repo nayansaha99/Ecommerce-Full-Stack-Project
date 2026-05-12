@@ -1,5 +1,4 @@
-'use client'
-import React from 'react';
+"use client"
 import { useState, useEffect } from "react";
 import Link from 'next/link';
 import { motion, AnimatePresence } from "framer-motion";
@@ -40,7 +39,7 @@ const backdropVar = {
 //     { name: "Books", icon: "📚", count: "950+" },
 //     { name: "Food", icon: "🛒", count: "4.2k+" },
 // ];
-const Appnavbar = () => {
+const Appnavbar = (props) => {
     const [showLogin, setShowLogin] = useState(false);
 
     const [showRegister, setShowRegister] = useState(false);
@@ -53,6 +52,8 @@ const Appnavbar = () => {
     const [notification, setNotification] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [otpOpen, setOtpOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
 
     const showNotif = (msg, type = "success") => {
         setNotification({ msg, type });
@@ -135,26 +136,58 @@ const Appnavbar = () => {
                                 showLogin={showLogin}
                                 showNotif={showNotif}
                             /> */}
-                            <Link href={"/login"}> 
-                            <motion.button
-                                whileHover="hover"
-                                whileTap="tap"
-                                className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700"
-                            >
-                                <motion.div
-                                    variants={{
-                                        hover: { rotate: 15 },
-                                        tap: { scale: 0.9 },
-                                    }}
-                                >
-                                    <User className="w-5 h-5" />
-                                </motion.div>
+                            {
+                                
+                               props.isLogin ? (
+                                   
+                                    <Link href={""}>
+                                        
+                                        <motion.button
+                                        
+                                            whileHover="hover"
+                                            whileTap="tap"
+                                            className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700"
+                                        >
+                                            <motion.div
+                                                variants={{
+                                                    hover: { rotate: 15 },
+                                                    tap: { scale: 0.9 },
+                                                }}
+                                            >
+                                                <User className="w-5 h-5" />
+                                            </motion.div>
 
-                                <span className="text-sm font-medium">Account</span>
-                            </motion.button>
-                            </Link>
+                                            <span className="text-sm font-medium">Logout</span>
+                                            
+                                        </motion.button>
 
-                          
+                                    </Link>
+                                ) : (
+                                    <>
+                                        <Link href={"/login"}>
+                                            <motion.button
+                                                whileHover="hover"
+                                                whileTap="tap"
+                                                className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700"
+                                            >
+                                                <motion.div
+                                                    variants={{
+                                                        hover: { rotate: 15 },
+                                                        tap: { scale: 0.9 },
+                                                    }}
+                                                >
+                                                    <User className="w-5 h-5" />
+                                                </motion.div>
+
+                                                <span className="text-sm font-medium">Account</span>
+                                            </motion.button>
+                                        </Link>
+                                    </>
+                                )
+                                
+                            }
+
+                           
                             {/* <WishList
                                 setWishlistOpen={setWishlistOpen}
                                 wishlistOpen={wishlistOpen}
@@ -185,13 +218,13 @@ const Appnavbar = () => {
 
                             </Link>
 
-                            <MobileNav
+                            {/* <MobileNav
                                 isOpen={isOpen}
                                 setIsOpen={setIsOpen}
                                 activeCategory={activeCategory}
                                 setShowRegister={setShowRegister}
                                 setShowLogin={setShowLogin}
-                                showLogin={showLogin} />
+                                showLogin={showLogin} /> */}
 
                         </div>
                     </div>

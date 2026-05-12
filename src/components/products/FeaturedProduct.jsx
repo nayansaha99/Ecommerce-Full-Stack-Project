@@ -13,6 +13,9 @@ import {
 } from "lucide-react";
 import useBlockBack from '../master/useBlockBack';
 import useRedirectBackToHome from '../master/useBlockBack';
+import { ErrorToast, SuccessToast } from '@/utility/FormHelper';
+import { Toaster } from 'react-hot-toast';
+import SubmitButton from '../master/SubmitButton';
 
 const PRODUCTS = [
   { id: 1, name: "Banarasi Silk Saree", price: 4500, original: 6000, category: "Dresses", rating: 4.8, reviews: 124, badge: "HOT", img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&q=85", description: "Luxurious Banarasi weave with intricate zari work." },
@@ -31,10 +34,14 @@ const BADGE_STYLES = {
   TOP: "bg-indigo-600 text-white",
 };
 const SPRING = { type: "spring", stiffness: 300, damping: 30 };
-const FeaturedProduct = () => {
+const FeaturedProduct = (props) => {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [cart, setCart] = useState(false);
+  let [submit, setSubmit] = useState(false)
+
+
 
   const filtered = PRODUCTS.filter(p => {
     const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -55,10 +62,78 @@ const FeaturedProduct = () => {
     };
   }, []);
 
+  //handle add to cart
+  const handleAddToCart = async () => {
+    setSubmit(true);
+    try {
+      const res = await fetch("/api/cart/list", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+
+        },
+        body: JSON.stringify({
+          product_id: 4,
+          color: "green",
+          size: "12",
+          qty: 7,
+
+        }),
+        credentials: "include",
 
 
+      });
+
+      const data = await res.json();
+
+      if (data.status === "success") {
+        SuccessToast("Cart added");
+      } else {
+        ErrorToast(data.data || "Invalid cart");
+      }
+
+    } catch (e) {
+      ErrorToast("You are not logged in");
+    } finally {
+      setSubmit(false);
+    }
+  };
+    //handle add to wishlist
+  const handleWishCart = async () => {
+    setSubmit(true);
+    try {
+      const res = await fetch("/api/wish/list", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+
+        },
+        body: JSON.stringify({
+          product_id: 4,
+
+        }),
+        credentials: "include",
+
+
+      });
+
+      const data = await res.json();
+
+      if (data.status === "success") {
+        SuccessToast("wish added");
+      } else {
+        ErrorToast(data.data || "Invalid Wish");
+      }
+
+    } catch (e) {
+      ErrorToast("You are not logged in");
+    } finally {
+      setSubmit(false);
+    }
+  };
   return (
     <div>
+      <Toaster position="top-right" />
       <section id="featured" className="max-w-7xl mx-auto px-4 mt-10 mb-14">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -127,7 +202,9 @@ const FeaturedProduct = () => {
                     clicking → adds to wishlistItems state AND opens the drawer
                   */}
                   <motion.button
-                    onClick={e => { e.stopPropagation(); }}
+
+                    onClick={handleWishCart}
+                    submit={submit}
                     whileTap={{ scale: 0.72 }}
                     transition={SPRING}
                     aria-label="Add to wishlist"
@@ -158,6 +235,8 @@ const FeaturedProduct = () => {
                   </div>
                   <Link href={""} ></Link>
                   <motion.button
+                    onClick={handleAddToCart}
+                    submit={submit}
                     whileTap={{ scale: 0.96 }}
                     transition={SPRING}
                     className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white transition-colors mt-auto"

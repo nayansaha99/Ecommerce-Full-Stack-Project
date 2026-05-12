@@ -28,15 +28,13 @@ const backdropVar = {
     exit: { opacity: 0, transition: { duration: 0.2 } },
 };
 const SignUp = ({ }) => {
-
-
-
     const [showRegister, setShowRegister] = useState(false);
     const router = useRouter();
     const searchParams = useSearchParams();
     // const [regForm, setRegForm] = useState({ name: "", email: "", password: "", confirm: "" });
     let [data, setData] = useState({ cus_name: "", cus_phone: "", email: "", password: "" })
     let [submit, setSubmit] = useState(false);
+    //input On change
     const inputOnChange = (name, value) => {
 
         setData((data) => ({
@@ -47,7 +45,7 @@ const SignUp = ({ }) => {
         }))
 
     }
-
+    //Form Submission
     const formSubmit = async () => {
         if (IsEmpty(data.cus_name)) {
             ErrorToast("Your Name is Required")
@@ -82,13 +80,13 @@ const SignUp = ({ }) => {
             }
         }
     }
-
+   
     useEffect(() => {
         const popup = searchParams.get("popup");
         // This ensures showCart is always in sync with the URL
         setShowRegister(true);
     }, [searchParams.toString()]);
-
+    //route back
     const handleclose = () => {
         router.back();
         setShowRegister(false);

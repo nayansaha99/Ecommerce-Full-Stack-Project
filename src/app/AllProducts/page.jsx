@@ -1,16 +1,18 @@
 import AddedCart from '@/components/master/AddedCart';
-import Plainlayout from '@/components/master/Plainlayout';
+import Masterlayout from '@/components/master/masterlayout';
 import FeaturedProduct from '@/components/products/FeaturedProduct';
 import Hero from '@/components/products/Hero';
+import { cookies } from 'next/headers';
 import React from 'react';
 
-const page = () => {
+const page = async () => {
+
     return (
         <div>
-            <Plainlayout>
-                <AddedCart/>
+            <Masterlayout>
+                <AddedCart />
                 <FeaturedProduct/>
-            </Plainlayout>
+            </Masterlayout>
         </div>
     );
 };

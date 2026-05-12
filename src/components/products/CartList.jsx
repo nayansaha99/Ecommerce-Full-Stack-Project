@@ -17,8 +17,8 @@ const CartList = ({}) => {
     const [cartItems, setCartItems] = useState([]);
     const searchParams = useSearchParams();
     const [showCart, setShowCart] = useState(false);
-    const notif = useNotif();
-    const showNotif = notif?.showNotif;
+    // const notif = useNotif();
+    // const showNotif = notif?.showNotif;
     useEffect(() => {
         const popup = searchParams.get("popup");
 

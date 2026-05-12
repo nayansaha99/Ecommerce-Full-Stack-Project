@@ -1,4 +1,4 @@
-import Userorders from '@/components/user/Profile/UserOrders';
+import Userorders from '@/components/user/Profile/User_Orders';
 import React from 'react';
 
 const page = () => {

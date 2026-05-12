@@ -20,7 +20,7 @@ const backdropVar = {
   visible: { opacity: 1, transition: { duration: 0.25 } },
   exit: { opacity: 0, transition: { duration: 0.2 } },
 };
-const MobileNav = ({setIsOpen,isOpen,activeCategory,setShowRegister, setShowLogin}) => {
+const MobileNav = () => {
   const onOpen = () => setIsOpen(true);
   const onClose = () => setIsOpen(false);
   function Backdrop({ onClick }) {

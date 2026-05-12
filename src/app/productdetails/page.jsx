@@ -1,7 +1,7 @@
-import Plainlayout from '@/components/master/Plainlayout';
+import Masterlayout from '@/components/master/masterlayout';
 import ProductDetails from '@/components/products/ProductDetails';
 import Footer from '@/components/master/Footer';
-import React from 'react';
+
 
 const page = () => {
     return (
