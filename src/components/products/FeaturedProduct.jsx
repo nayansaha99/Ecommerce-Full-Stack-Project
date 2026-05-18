@@ -1,22 +1,17 @@
 'use client'
 import React from 'react';
-
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from 'next/link';
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   ShoppingCart, Heart, Search, Menu, X, ChevronLeft, ChevronRight,
   Star, Truck, Shield, RefreshCw, Headphones, Eye, EyeOff,
   CreditCard, Smartphone, Wallet, CheckCircle, User, LogIn,
   MapPin, Bell, Package, ArrowRight, Zap, Tag
 } from "lucide-react";
-import useBlockBack from '../master/useBlockBack';
-import useRedirectBackToHome from '../master/useBlockBack';
 import { ErrorToast, SuccessToast } from '@/utility/FormHelper';
 import { Toaster } from 'react-hot-toast';
-import SubmitButton from '../master/SubmitButton';
-
 const PRODUCTS = [
   { id: 1, name: "Banarasi Silk Saree", price: 4500, original: 6000, category: "Dresses", rating: 4.8, reviews: 124, badge: "HOT", img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&q=85", description: "Luxurious Banarasi weave with intricate zari work." },
   { id: 2, name: "Jamdani Cotton Kurti", price: 1850, original: 2400, category: "Dresses", rating: 4.6, reviews: 98, badge: "SALE", img: "https://images.unsplash.com/photo-1564584217132-2271feaeb3c5?w=600&q=85", description: "Breathable Dhaka muslin with traditional block-print motifs." },
@@ -40,27 +35,14 @@ const FeaturedProduct = (props) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [cart, setCart] = useState(false);
   let [submit, setSubmit] = useState(false)
-
-
-
+  const pathname = usePathname();
   const filtered = PRODUCTS.filter(p => {
     const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchCat = activeCategory === "All" || p.category === activeCategory;
     return matchSearch && matchCat;
 
   });
-  useEffect(() => {
-    const handleBack = () => {
-      router.push("/");
-    };
 
-    window.history.pushState(null, "", window.location.href);
-    window.addEventListener("popstate", handleBack);
-
-    return () => {
-      window.removeEventListener("popstate", handleBack);
-    };
-  }, []);
 
   //handle add to cart
   const handleAddToCart = async () => {
@@ -70,35 +52,29 @@ const FeaturedProduct = (props) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-
         },
         body: JSON.stringify({
           product_id: 4,
           color: "green",
           size: "12",
           qty: 7,
-
         }),
         credentials: "include",
-
-
       });
-
       const data = await res.json();
-
       if (data.status === "success") {
         SuccessToast("Cart added");
       } else {
-        ErrorToast(data.data || "Invalid cart");
+        ErrorToast(data.data || "You are not logged in");
       }
 
     } catch (e) {
-      ErrorToast("You are not logged in");
+      ErrorToast("Invalid cart");
     } finally {
       setSubmit(false);
     }
   };
-    //handle add to wishlist
+  //handle add to wishlist
   const handleWishCart = async () => {
     setSubmit(true);
     try {
@@ -106,25 +82,19 @@ const FeaturedProduct = (props) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-
         },
         body: JSON.stringify({
           product_id: 4,
-
         }),
         credentials: "include",
-
-
       });
 
       const data = await res.json();
-
       if (data.status === "success") {
         SuccessToast("wish added");
       } else {
         ErrorToast(data.data || "Invalid Wish");
       }
-
     } catch (e) {
       ErrorToast("You are not logged in");
     } finally {
@@ -137,19 +107,21 @@ const FeaturedProduct = (props) => {
       <section id="featured" className="max-w-7xl mx-auto px-4 mt-10 mb-14">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-black text-slate-900 tracking-tight">
+            <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight whitespace-nowrap">
               {activeCategory === "All" ? "Featured Products" : activeCategory}
             </h2>
             <p className="text-sm text-slate-500 mt-0.5">{filtered.length} item{filtered.length !== 1 ? "s" : ""} available</p>
           </div>
-          <select className="text-sm border border-slate-200 rounded-xl px-3 py-2 text-slate-700 bg-white outline-none hover:border-indigo-400 transition-colors cursor-pointer">
-            <option>Best Selling</option>
-            <option>Price: Low to High</option>
-            <option>Price: High to Low</option>
-            <option>Newest First</option>
-          </select>
+          <div className="flex items-center justify-between mb-3">
+            <select className="text-sm border border-slate-200 rounded px-2 py-1 md:px-4 md:py-2 text-slate-700 bg-white outline-none hover:border-indigo-400 transition-colors cursor-pointer  mr-2">
+              <option>Best Selling</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+              <option>Newest First</option>
+            </select>
+             <Link href={"./AllProducts"} className="text-sm md:text-md text-indigo-600 font-medium flex items-center gap-1  hover:gap-2 transition-all whitespace-nowrap">View all <ArrowRight className="w-5 h-5" /></Link>
+          </div>
         </div>
-
         {filtered.length === 0 && (
           <div className="text-center py-20 text-slate-400">
             <Package className="w-12 h-12 mx-auto mb-3 opacity-40" />
@@ -158,25 +130,16 @@ const FeaturedProduct = (props) => {
               className="text-indigo-600 text-sm mt-2 hover:underline">Clear filters</button>
           </div>
         )}
-
         {/* THE FIXED PRODUCT GRID */}
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-
           {filtered.map(product => {
             return (
-
               <motion.article
                 key={product.id}
                 whileHover={{ y: -6, boxShadow: "0 20px 48px -8px rgba(99,102,241,0.16)" }}
                 transition={SPRING}
                 className="bg-white rounded-2xl border border-slate-200 overflow-hidden group flex flex-col"
               >
-                {/*
-                  aspect-[3/4] = portrait card ratio (like a clothing/jewellery card)
-                  object-cover + object-center = fills the box, crops edges, never distorts
-                  This makes ALL cards exactly the same height regardless of source image dimensions.
-                */}
                 <div className="relative w-full aspect-[3/4] bg-slate-100 overflow-hidden flex-shrink-0">
                   <Link href={"./productdetails"} key={""} className="contents">
                     <img
@@ -185,50 +148,43 @@ const FeaturedProduct = (props) => {
                       className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                       loading="lazy"
                     />
-
                     {product.badge && (
                       <span className={`absolute top-2.5 left-2.5 text-[11px] font-black px-2.5 py-1 rounded-lg z-10 ${BADGE_STYLES[product.badge] ?? "bg-slate-700 text-white"}`}>
                         {product.badge}
                       </span>
                     )}
-
                     <span className="absolute top-2.5 right-11 bg-white/90 text-rose-600 text-[11px] font-black px-2 py-1 rounded-lg border border-rose-100 z-10">
                       Discount
                     </span>
-
                   </Link>
                   {/*
                     WISHLIST BUTTON — toggles between outline ♡ and filled ♥
                     clicking → adds to wishlistItems state AND opens the drawer
                   */}
                   <motion.button
-
                     onClick={handleWishCart}
                     submit={submit}
                     whileTap={{ scale: 0.72 }}
                     transition={SPRING}
                     aria-label="Add to wishlist"
                     className={`absolute top-2.5 right-2.5 z-10 p-2 rounded-xl shadow-sm transition-colors
-                     "bg-rose-500 text-white" : "bg-white/90 text-slate-400 hover:bg-rose-50 hover:text-rose-500"}`}
+                    "bg-rose-500 text-white" : "bg-white/90 text-slate-400 hover:bg-rose-50 hover:text-rose-500"}`}
                   >
                     <Heart className="w-4 h-4" />
                   </motion.button>
                 </div>
-
                 {/* Card body */}
                 <Link href={"./productdetails"} key={""} className="contents"></Link>
                 <div className="p-4 flex flex-col flex-1">
                   <p className="text-[11px] font-semibold text-indigo-500 uppercase tracking-wide mb-1">{product.category}</p>
                   <h3 className="text-sm font-bold text-slate-900 leading-snug line-clamp-2 mb-1.5 flex-1">{product.name}</h3>
                   <p className="text-xs text-slate-400 line-clamp-2 mb-3 leading-relaxed">{product.description}</p>
-
                   <div className="flex items-center gap-1.5 mb-3">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} className={`w-3.5 h-3.5 ${i < Math.floor(product.rating) ? "fill-amber-400 text-amber-400" : "fill-slate-200 text-slate-200"}`} />
                     ))}
                     <span className="text-xs text-slate-500">({product.reviews})</span>
                   </div>
-
                   <div className="flex items-baseline gap-2 mb-4">
                     <span className="text-lg font-black text-slate-900">৳{product.price.toLocaleString()}</span>
                     <span className="text-xs text-slate-400 line-through">৳{product.original.toLocaleString()}</span>
@@ -244,12 +200,9 @@ const FeaturedProduct = (props) => {
                     <ShoppingCart className="w-4 h-4" /> Add to Cart
                   </motion.button>
                 </div>
-
-
               </motion.article>
             );
           })}
-
         </div>
       </section>
       <section className="bg-indigo-600 py-20 px-4">

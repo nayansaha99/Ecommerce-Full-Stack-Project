@@ -14,6 +14,7 @@ export async function POST(req, res) {
                 otp: code,
                 role: "user",
                 otpExpireAt: new Date(Date.now() + 60 * 1000),
+                otpResendAt: new Date(Date.now() + 60 * 1000),
                 customer_profiles: {
                     create: {
                         cus_name: reqBody.cus_name,
@@ -43,7 +44,11 @@ export async function POST(req, res) {
         const token = await CreateToken(reqBody.email, reqBody.id);
         const expireDuration = new Date(Date.now() + 24 * 60 * 60 * 1000);//24hours
         const cookieString = `token=${token}; expires=${expireDuration.toUTCString()}; path=/; HttpOnly;SameSite=Strict`;
-        return NextResponse.json({ status: "success", data: { result, token: token }, message: "User Registered Successfully, 6 Digit OTP Code has been sent to your email" }, { status: 200, headers: { "set-Cookie": cookieString } });
+        return NextResponse.json({ status: "success", data: { 
+             result, token: token,
+             otpExpireAt: result.otpExpireAt, 
+             otpResendAt: result.otpResendAt }, 
+             message: "User Registered Successfully, 6 Digit OTP Code has been sent to your email" }, { status: 200, headers: { "set-Cookie": cookieString } });
     }
     catch (e) {
         return NextResponse.json({ status: "fail", data: e.toString() })

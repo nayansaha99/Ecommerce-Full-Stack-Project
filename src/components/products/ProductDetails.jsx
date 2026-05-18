@@ -59,18 +59,18 @@ const ProductDetails = ({ id, title, children, product, onBack, onWishlist, isWi
         setDigits(next);
         inputRefs.current[Math.min(pasted.length, TOTAL_DIGITS - 1)]?.focus();
     }
-    useEffect(() => {
-        const handleBack = () => {
-            router.push("/");
-        };
+    // useEffect(() => {
+    //     const handleBack = () => {
+    //         router.push("/");
+    //     };
 
-        window.history.pushState(null, "", window.location.href);
-        window.addEventListener("popstate", handleBack);
+    //     window.history.pushState(null, "", window.location.href);
+    //     window.addEventListener("popstate", handleBack);
 
-        return () => {
-            window.removeEventListener("popstate", handleBack);
-        };
-    }, []);
+    //     return () => {
+    //         window.removeEventListener("popstate", handleBack);
+    //     };
+    // }, []);
 
     return (
         <>

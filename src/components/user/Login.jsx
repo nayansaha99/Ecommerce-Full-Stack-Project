@@ -21,70 +21,57 @@ const Login = () => {
     const router = useRouter();
     let [data, setData] = useState({ email: "", password: "" })
     let [submit, setSubmit] = useState(false);
+    useEffect(() => {
+        router.prefetch("/loginOtp");
+    }, []);
     //inputOnchange
     const inputOnChange = (name, value) => {
-
         setData((data) => ({
-
             ...data,
             [name]: value
-
         }))
-
     }
-
     //Form Submission
     const formSubmit = async () => {
-        
-        if (IsEmail(data.email)) {
-            ErrorToast("Email Required!")
-        }
-        else if (IsEmpty(data.password)) {
-            ErrorToast("Password is Required")
-        }
-        else {
-            setSubmit(true);
-            const options = { method: 'POST', body: JSON.stringify(data) }
-
-            let res = await (await fetch("/api/user/login", options)).json();
-
-            console.log(res);
-            setSubmit(false);
-            if (res['status'] === "success") {
-
-                SuccessToast("Request Success")
-                await  new Promise(r => setTimeout(r, 300));
-                router.push("/loginotpverification")
-
+        try {
+            if (IsEmail(data.email)) {
+                ErrorToast("Email Required!")
+            }
+            else if (IsEmpty(data.password)) {
+                ErrorToast("Password is Required")
             }
             else {
-                ErrorToast("This email is Invalid");
+                setSubmit(true);
+                const options = { method: 'POST', body: JSON.stringify(data) }
+                let res = await (await fetch("/api/user/login", options)).json();
+                console.log(res);
+
+                if (res['status'] === "success") {
+                    SuccessToast("Request Success")
+                    await new Promise(r => setTimeout(r, 50));
+                    router.push("/loginOtp")
+                }
+                else {
+                    ErrorToast("This email or password is Invalid");
+                }
             }
         }
+        catch (e) {
+            setSubmit(false);
+            ErrorToast("Something Went Wrong")
+
+        }
     }
+
+
     useEffect(() => {
         const popup = searchParams.get("popup");
-        // This ensures showCart is always in sync with the URL
         setShowLogin(true);
     }, [searchParams.toString()]);
-
     const handleclose = () => {
         setShowLogin(false);
         router.push('/');
     }
-
-    useEffect(() => {
-        const handleBack = () => {
-            router.push("/");
-        };
-
-        window.history.pushState(null, "", window.location.href);
-        window.addEventListener("popstate", handleBack);
-
-        return () => {
-            window.removeEventListener("popstate", handleBack);
-        };
-    }, []);
 
     return (
         <div>
@@ -117,14 +104,14 @@ const Login = () => {
                             <div className="space-y-4">
                                 <div>
                                     <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Email Address</label>
-                                    <input type="email" value={data.email} onChange={(e) => (inputOnChange('email', e.target.value))}   placeholder="you@example.com" className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 outline-none focus:border-indigo-500 transition-colors placeholder-slate-400" />
+                                    <input type="email" value={data.email} onChange={(e) => (inputOnChange('email', e.target.value))} placeholder="you@example.com" className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 outline-none focus:border-indigo-500 transition-colors placeholder-slate-400" />
                                 </div>
 
                                 <div>
                                     <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Password</label>
                                     <div className="relative">
                                         <input type="password" value={data.password}
-                                            onChange={(e) => (inputOnChange('password', e.target.value))} placeholder="Enter your password"  className="w-full border border-slate-200 rounded-xl px-4 py-3 pr-12 text-sm text-slate-700 outline-none focus:border-indigo-500 transition-colors placeholder-slate-400" />
+                                            onChange={(e) => (inputOnChange('password', e.target.value))} placeholder="Enter your password" className="w-full border border-slate-200 rounded-xl px-4 py-3 pr-12 text-sm text-slate-700 outline-none focus:border-indigo-500 transition-colors placeholder-slate-400" />
                                         <button onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
                                             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                         </button>
@@ -135,12 +122,10 @@ const Login = () => {
                                 <SubmitButton submit={submit} type='button' onClick={formSubmit} className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3.5 rounded-xl transition-all mt-2">
                                     Sign In
                                 </SubmitButton>
-
                                 <div className="relative my-4">
                                     <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200" /></div>
                                     <div className="relative flex justify-center"><span className="bg-white px-3 text-xs text-slate-400">or continue with</span></div>
                                 </div>
-
                                 <div className="grid grid-cols-2 gap-3">
                                     <button className="flex items-center justify-center gap-2 border border-slate-200 rounded-xl py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
                                         <span className="text-base">🇬</span> Google
@@ -149,7 +134,6 @@ const Login = () => {
                                         <span className="text-base">📘</span> Facebook
                                     </button>
                                 </div>
-
                                 <p className="text-center text-sm text-slate-500 mt-2">
                                     Don't have an account?{" "}
                                     <Link

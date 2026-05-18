@@ -25,7 +25,8 @@ export async function POST(req, res) {
             where: { email: email },
             data: {
                 otp: newCode,
-                otpExpireAt: expiry
+                otp_resend_at:expiry,
+                otpExpireAt:null
             }
         });
 

@@ -1,5 +1,4 @@
 import SignUp from '@/components/user/SignUp';
-
 import Masterlayout from '@/components/master/masterlayout';
 import Hero from '@/components/products/Hero';
 import Shopbycategory from '@/components/products/shopbycategory';

@@ -1,4 +1,3 @@
-import Masterlayout from '@/components/master/masterlayout';
 import ProductDetails from '@/components/products/ProductDetails';
 import Footer from '@/components/master/Footer';
 

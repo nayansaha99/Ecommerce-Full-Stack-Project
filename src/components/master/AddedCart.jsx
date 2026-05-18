@@ -10,20 +10,20 @@ const AddedCart = () => {
 
                     <div class="flex-1 bg-white p-4 md:p-5 rounded-md shadow-sm flex flex-col md:flex-row gap-4">
 
-                        <img
+                        {/* <img
                             src="https://via.placeholder.com/120"
                             class="w-24 h-24 md:w-28 md:h-28 object-contain mx-auto md:mx-0"
-                        />
+                        /> */}
 
 
                         <div class="flex flex-col gap-1 text-center md:text-left">
 
 
-                            <div class="flex items-center justify-center md:justify-start gap-2 text-green-700 font-semibold">
-                                <span class="w-5 h-5 bg-green-600 text-white rounded-full flex items-center justify-center text-xs">
+                            <div class="flex items-center justify-center md:justify-start gap-2 text-red-700 font-semibold">
+                                <span class="w-5 h-5 bg-red-600 text-white rounded-full flex items-center justify-center text-xs">
                                     ✓
                                 </span>
-                                Added to cart
+                                Your Amazon Cart is empty
                             </div>
 
                             <p class="text-sm text-gray-700">
@@ -51,8 +51,8 @@ const AddedCart = () => {
                         </h2>
 
 
-                        <button class="w-full mt-4 bg-yellow-400 hover:bg-yellow-500 text-black font-medium py-2 rounded-full text-sm md:text-base">
-                            Proceed to checkout (5 items)
+                        <button class="w-full mt-4 bg-blue-600 hover:bg-blue-600 text-white font-medium py-2 rounded-full text-sm md:text-base">
+                            Proceed to checkout (0 items)
                         </button>
 
 

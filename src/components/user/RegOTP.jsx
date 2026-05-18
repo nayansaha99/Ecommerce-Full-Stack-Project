@@ -20,7 +20,7 @@ const otpModalVar = { hidden: { opacity: 0, scale: 0.94, y: 16 }, visible: { opa
 const backdropVar = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.25 } }, exit: { opacity: 0, transition: { duration: 0.2 } } };
 const TOTAL_DIGITS = 6;
 const RESEND_SECS = 60;
-const LoginOtpverification = (props) => {
+const RegOTP = (props) => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [otpOpen, setOtpOpen] = useState(false);
@@ -39,8 +39,6 @@ const LoginOtpverification = (props) => {
             ...data,
             [name]: value
         }))
-
-
     }
     // OTPformSubmit
     const formSubmit = async () => {
@@ -62,14 +60,16 @@ const LoginOtpverification = (props) => {
                 setSubmit(false);
                 if (res['status'] === "success") {
                     console.log(res.data);
-                    SuccessToast("Login Successfull");
+                    SuccessToast("Registration Completed. Welcome to BazaarBD");
+
+                    await fetch("/api/user/logout", {
+                        method: "GET"
+                    });
                     await new Promise(r => setTimeout(r, 300));
-                    router.push("/");
+                    router.push("/login");
                 }
                 else {
-
                     ErrorToast("Invalid Pin")
-
                 }
             }
         }
@@ -82,7 +82,7 @@ const LoginOtpverification = (props) => {
         }
     }
     // ResendOTP
-    const resendOTP = async () => {
+    const RegresendOTP = async () => {
         try {
             setResending(true);
             const options = { method: 'POST' }
@@ -140,22 +140,22 @@ const LoginOtpverification = (props) => {
         await fetch("/api/user/logout", {
             method: "GET"
         });
-        await new Promise(r => setTimeout(r, 300));
+        await new Promise(r => setTimeout(r, 50));
         router.push("/");
     }
     // browserBack
-    useEffect(() => {
-        const handleBack = () => {
-            router.push("/");
-        };
+    // useEffect(() => {
+    //     const handleBack = () => {
+    //         router.push("/");
+    //     };
 
-        window.history.pushState(null, "", window.location.href);
-        window.addEventListener("popstate", handleBack);
+    //     window.history.pushState(null, "", window.location.href);
+    //     window.addEventListener("popstate", handleBack);
 
-        return () => {
-            window.removeEventListener("popstate", handleBack);
-        };
-    }, []);
+    //     return () => {
+    //         window.removeEventListener("popstate", handleBack);
+    //     };
+    // }, []);
 
     // otp Form
     async function handleVerify() {
@@ -359,15 +359,22 @@ const LoginOtpverification = (props) => {
                                         <p className="text-sm text-slate-500">Didn't receive the code?</p>
                                         {timer > 0
                                             ? <span className="text-sm font-bold text-indigo-600 tabular-nums">{mins}:{secs}</span>
-                                            : <motion.button onClick={() => {
-                                                resendOTP();
-                                                handleResend();
-                                            }}
+                                            : <motion.button
+                                                onClick={async () => {
+                                                    if (resending) return;
 
-                                                submit={submit}
-                                                disabled={resending} whileTap={{ scale: 0.95 }} transition={SPRING}
-                                                className="flex items-center gap-1 text-sm font-bold text-indigo-600 hover:text-indigo-800 transition-colors disabled:opacity-50">
-                                                <RefreshCw className={`w-3.5 h-3.5 ${resending ? "animate-spin" : ""}`} />
+                                                    await RegresendOTP();
+                                                    handleResend();
+                                                }}
+                                                disabled={resending}
+                                                whileTap={{ scale: 0.95 }}
+                                                transition={SPRING}
+                                                className="flex items-center gap-1 text-sm font-bold text-indigo-600 hover:text-indigo-800 transition-colors disabled:opacity-50"
+                                            >
+                                                <RefreshCw
+                                                    className={`w-3.5 h-3.5 ${resending ? "animate-spin" : ""}`}
+                                                />
+
                                                 {resending ? "Resending…" : "Resend Code"}
                                             </motion.button>
                                         }
@@ -385,4 +392,4 @@ const LoginOtpverification = (props) => {
     );
 };
 
-export default LoginOtpverification;
+export default RegOTP;

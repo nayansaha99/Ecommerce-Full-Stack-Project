@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: false, // ✅ Move here — top level
+
   experimental: {
-    scrollRestoration: true,
+    scrollRestoration: true, // ✅ This stays in experimental
   },
 };
 

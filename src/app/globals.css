@@ -11,3 +11,15 @@
 .animate-loading-bar {
   animation: loading-bar 1.5s linear infinite;
 } */
+/* html {
+  scrollbar-gutter: stable;
+}
+html.modal-open,
+body.modal-open {
+  overflow: hidden !important;
+  height: 100%;
+} */
+/* html.overflow-hidden,
+body.overflow-hidden {
+  overflow: hidden !important;
+} */

@@ -21,18 +21,29 @@ export async function POST(req) {
     const EmailSubject = "Next Ecommerce Verification Code";
     await SendEmail(reqBody.email, EmailText, EmailSubject);
     const result = await prisma.users.update({
-      where: { email: reqBody.email,role: "user"},
-      data: { otp: code },
+      where: { email: reqBody.email, role: "user" },
+      data: {
+        otp: code,
+        otpExpireAt: new Date(Date.now() + 60 * 1000),
+        otpResendAt: new Date(Date.now() + 60 * 1000)
+      }
+
     });
     const token = await CreateToken(user.email, user.id);
     const expireDuration = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
     const cookieString = `token=${token}; expires=${expireDuration.toUTCString()}; path=/; httpOnly:true; SameSite=Strict`;
     console.log(token);
 
-    return NextResponse.json({ status: "success", message: "6 Digit OTP Code has been sent to your email", data: { user: result, token: token } }, { status: 200, headers: { "Set-Cookie": cookieString } });
+    return NextResponse.json({
+      status: "success", message: "6 Digit OTP Code has been sent to your email", data: {
+        user: result, token: token, 
+        otpExpireAt: result.otpExpireAt,
+        otpResendAt: result.otpResendAt
+      }
+    }, { status: 200, headers: { "Set-Cookie": cookieString } });
   }
 
-  catch (e) { 
+  catch (e) {
     return NextResponse.json({
       status: "fail", error: e.toString()
     });

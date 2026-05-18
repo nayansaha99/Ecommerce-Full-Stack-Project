@@ -4,7 +4,7 @@ import Hero from '@/components/products/Hero';
 import Shopbycategory from '@/components/products/shopbycategory';
 import FeaturedProduct from '@/components/products/FeaturedProduct';
 const page = () => {
-
+  
    return (
       <Masterlayout>
          <Hero />

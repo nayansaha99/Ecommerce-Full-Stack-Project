@@ -7,7 +7,7 @@ export async function POST(req, res) {
     try {
         let headerList = await headers();
         let email = headerList.get('email');
-         console.log(email)
+        console.log(email)
         const prisma = new PrismaClient();
         let reqBody = await req.json();
         const otp = reqBody.otp;
@@ -18,7 +18,7 @@ export async function POST(req, res) {
         if (user.otpExpireAt && new Date() > new Date(user.otpExpireAt)) {
 
             await prisma.users.update({
-                where: { email },
+                where: { email:email },
                 data: {
                     otp: "0",
                     otpExpireAt: null,
@@ -33,12 +33,30 @@ export async function POST(req, res) {
                 { status: 401 }
             );
         }
+       else if (user.otpResendAt && new Date() > new Date(user.otpResendAt)) {
 
+            await prisma.users.update({
+                where: { email:email },
+                data: {
+                    otp: "0",
+                    otpResendAt: null,
+                },
+            });
+
+            return NextResponse.json(
+                {
+                    status: "fail",
+                    data: "OTP expired",
+                },
+                { status: 401 }
+            );
+        }
         await prisma.users.update({
-            where: { email },
+            where: { email:email },
             data: {
                 otp: "0",
-                otpExpireAt: null
+                otpExpireAt: null,
+                otpResendAt:null
             }
         });
         let token = await CreateToken(user.email, user.id);

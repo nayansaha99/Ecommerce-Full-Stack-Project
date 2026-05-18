@@ -71,8 +71,8 @@ const SignUp = ({ }) => {
             if (res['status'] === "success") {
 
                 SuccessToast("Request Success")
-                await new Promise(r => setTimeout(r, 300));
-                router.push("/otpverification")
+                await new Promise(r => setTimeout(r, 50));
+                router.push("/regOTP")
                 
             }
             else {
@@ -91,17 +91,17 @@ const SignUp = ({ }) => {
         router.back();
         setShowRegister(false);
     }
-    useEffect(() => {
-        const handleBack = () => {
-            router.push("/");
-        };
-        window.history.pushState(null, "", window.location.href);
-        window.addEventListener("popstate", handleBack);
+    // useEffect(() => {
+    //     const handleBack = () => {
+    //         router.push("/");
+    //     };
+    //     window.history.pushState(null, "", window.location.href);
+    //     window.addEventListener("popstate", handleBack);
 
-        return () => {
-            window.removeEventListener("popstate", handleBack);
-        };
-    }, []);
+    //     return () => {
+    //         window.removeEventListener("popstate", handleBack);
+    //     };
+    // }, []);
     return (
         <div className="">
             <Toaster position="top-right" />

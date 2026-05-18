@@ -19,8 +19,7 @@ const Payment = ({ }) => {
     const [showPayment, setShowPayment] = useState(false);
     const [paymentDone, setPaymentDone] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState("bkash");
-    const notif = useNotif();
-    const showNotif = notif?.showNotif;
+    
     useEffect(() => {
         const popup = searchParams.get("popup");
         setShowPayment(true);
